@@ -1,0 +1,468 @@
+// Mock data for TEKHE Dashboard
+
+export interface Patient {
+  id: string;
+  nom: string;
+  prenom: string;
+  age: number;
+  telephone: string;
+  ddr: string;
+  terme_prevu: string;
+  semaines: number;
+  structure: string;
+  agent: string;
+  statut_csu: 'actif' | 'en_attente' | 'a_renouveler';
+  photo_piece?: string;
+  qr_code?: string;
+  date_enrolement?: string;
+  date_renouvellement?: string;
+}
+
+export interface Visite {
+  id: string;
+  patient_id: string;
+  type: 'CPN1' | 'CPN2' | 'CPN3' | 'CPN4' | 'CPON';
+  date: string;
+  poids: number;
+  tension: string;
+  pb: number;
+  imc: number;
+  agent: string;
+  structure: string;
+}
+
+export interface RisqueIA {
+  id: string;
+  patient_id: string;
+  patient_nom: string;
+  age: number;
+  score: number;
+  niveau: 'rouge' | 'orange' | 'vert';
+  facteurs: string[];
+  regle_ia: string;
+  prediction?: string;
+  date: string;
+  semaines: number;
+}
+
+export interface ReferenceSonu {
+  id: string;
+  patient_id: string;
+  patient_nom: string;
+  alerte_heure: string;
+  transport_heure?: string;
+  admission_heure?: string;
+  contre_ref_heure?: string;
+  statut: 'alerte' | 'en_route' | 'admis' | 'resolu';
+  type_alerte: string;
+  structure_origine: string;
+  structure_sonu: string;
+  delai_minutes?: number;
+}
+
+export interface KPIData {
+  patientes_totales: number;
+  cpn1_realisees: number;
+  cpn1_cible: number;
+  cpn4_realisees: number;
+  cpn4_cible: number;
+  cpon_pourcentage: number;
+  risques_rouge: number;
+  risques_orange: number;
+  risques_vert: number;
+  references_delai_moyen: number;
+  csu_enrolled: number;
+  csu_actifs: number;
+  csu_a_renouveler: number;
+  pev_complet_pourcentage: number;
+  letalite_taux: number;
+  qualite_score: number;
+}
+
+export interface VaccinData {
+  id: string;
+  patient_id: string;
+  vaccin: 'BCG' | 'Polio0' | 'Penta1' | 'Penta2' | 'Penta3';
+  date_prevue: string;
+  date_realisee?: string;
+  statut: 'realise' | 'retard' | 'prevu';
+  structure: string;
+}
+
+// Patients
+export const mockPatients: Patient[] = [
+  {
+    id: 'p1',
+    nom: 'Diop',
+    prenom: 'Fatou',
+    age: 17,
+    telephone: '+221771234567',
+    ddr: '2025-03-15',
+    terme_prevu: '2025-12-20',
+    semaines: 32,
+    structure: 'Poste de Santé Dakar Nord',
+    agent: 'Aminata Sall',
+    statut_csu: 'actif',
+    date_enrolement: '2025-04-01',
+    date_renouvellement: '2026-04-01',
+    qr_code: 'QR_CSU_001'
+  },
+  {
+    id: 'p2',
+    nom: 'Ndiaye',
+    prenom: 'Aissatou',
+    age: 28,
+    telephone: '+221772345678',
+    ddr: '2025-04-20',
+    terme_prevu: '2026-01-25',
+    semaines: 27,
+    structure: 'Centre de Santé Pikine',
+    agent: 'Khady Faye',
+    statut_csu: 'actif',
+    date_enrolement: '2025-05-10',
+    date_renouvellement: '2026-05-10',
+    qr_code: 'QR_CSU_002'
+  },
+  {
+    id: 'p3',
+    nom: 'Sow',
+    prenom: 'Mariama',
+    age: 35,
+    telephone: '+221773456789',
+    ddr: '2025-02-10',
+    terme_prevu: '2025-11-15',
+    semaines: 37,
+    structure: 'Hôpital Rufisque',
+    agent: 'Bineta Diallo',
+    statut_csu: 'a_renouveler',
+    date_enrolement: '2024-03-01',
+    date_renouvellement: '2025-11-30',
+    qr_code: 'QR_CSU_003'
+  },
+  {
+    id: 'p4',
+    nom: 'Fall',
+    prenom: 'Awa',
+    age: 22,
+    telephone: '+221774567890',
+    ddr: '2025-05-01',
+    terme_prevu: '2026-02-05',
+    semaines: 25,
+    structure: 'Poste de Santé Guédiawaye',
+    agent: 'Fatou Sarr',
+    statut_csu: 'en_attente',
+    date_enrolement: '2025-06-01',
+    qr_code: 'QR_CSU_004'
+  },
+  {
+    id: 'p5',
+    nom: 'Mbaye',
+    prenom: 'Khadija',
+    age: 19,
+    telephone: '+221775678901',
+    ddr: '2025-04-05',
+    terme_prevu: '2026-01-10',
+    semaines: 28,
+    structure: 'Centre de Santé Thiaroye',
+    agent: 'Aminata Sall',
+    statut_csu: 'actif',
+    date_enrolement: '2025-05-01',
+    date_renouvellement: '2026-05-01',
+    qr_code: 'QR_CSU_005'
+  },
+  {
+    id: 'p6',
+    nom: 'Gueye',
+    prenom: 'Mame',
+    age: 31,
+    telephone: '+221776789012',
+    ddr: '2025-03-20',
+    terme_prevu: '2025-12-25',
+    semaines: 31,
+    structure: 'Poste de Santé Dakar Nord',
+    agent: 'Khady Faye',
+    statut_csu: 'actif',
+    date_enrolement: '2025-04-15',
+    date_renouvellement: '2026-04-15',
+    qr_code: 'QR_CSU_006'
+  },
+  {
+    id: 'p7',
+    nom: 'Cissé',
+    prenom: 'Ami',
+    age: 26,
+    telephone: '+221777890123',
+    ddr: '2025-05-15',
+    terme_prevu: '2026-02-19',
+    semaines: 23,
+    structure: 'Centre de Santé Pikine',
+    agent: 'Bineta Diallo',
+    statut_csu: 'actif',
+    date_enrolement: '2025-06-10',
+    date_renouvellement: '2026-06-10',
+    qr_code: 'QR_CSU_007'
+  },
+  {
+    id: 'p8',
+    nom: 'Thiam',
+    prenom: 'Seynabou',
+    age: 18,
+    telephone: '+221778901234',
+    ddr: '2025-02-28',
+    terme_prevu: '2025-12-03',
+    semaines: 35,
+    structure: 'Hôpital Rufisque',
+    agent: 'Fatou Sarr',
+    statut_csu: 'a_renouveler',
+    date_enrolement: '2024-04-01',
+    date_renouvellement: '2025-12-01',
+    qr_code: 'QR_CSU_008'
+  }
+];
+
+// Visites
+export const mockVisites: Visite[] = [
+  { id: 'v1', patient_id: 'p1', type: 'CPN1', date: '2025-04-10', poids: 58, tension: '140/95', pb: 20, imc: 22.5, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord' },
+  { id: 'v2', patient_id: 'p1', type: 'CPN2', date: '2025-06-15', poids: 62, tension: '145/98', pb: 19.5, imc: 24.0, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord' },
+  { id: 'v3', patient_id: 'p1', type: 'CPN3', date: '2025-08-20', poids: 68, tension: '150/100', pb: 19, imc: 26.3, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord' },
+  { id: 'v4', patient_id: 'p2', type: 'CPN1', date: '2025-05-25', poids: 65, tension: '120/80', pb: 24, imc: 25.5, agent: 'Khady Faye', structure: 'Centre de Santé Pikine' },
+  { id: 'v5', patient_id: 'p2', type: 'CPN2', date: '2025-07-30', poids: 68, tension: '118/78', pb: 25, imc: 26.6, agent: 'Khady Faye', structure: 'Centre de Santé Pikine' },
+  { id: 'v6', patient_id: 'p3', type: 'CPN1', date: '2025-03-20', poids: 72, tension: '115/75', pb: 26, imc: 28.1, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque' },
+  { id: 'v7', patient_id: 'p3', type: 'CPN2', date: '2025-05-25', poids: 76, tension: '118/77', pb: 26.5, imc: 29.6, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque' },
+  { id: 'v8', patient_id: 'p3', type: 'CPN3', date: '2025-07-30', poids: 80, tension: '120/80', pb: 27, imc: 31.2, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque' },
+  { id: 'v9', patient_id: 'p3', type: 'CPN4', date: '2025-09-15', poids: 84, tension: '122/82', pb: 27.5, imc: 32.8, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque' },
+  { id: 'v10', patient_id: 'p4', type: 'CPN1', date: '2025-06-10', poids: 60, tension: '110/70', pb: 23, imc: 23.4, agent: 'Fatou Sarr', structure: 'Poste de Santé Guédiawaye' },
+];
+
+// Risques IA
+export const mockRisquesIA: RisqueIA[] = [
+  {
+    id: 'r1',
+    patient_id: 'p1',
+    patient_nom: 'Fatou Diop',
+    age: 17,
+    score: 85,
+    niveau: 'rouge',
+    facteurs: ['Âge < 18', 'HTA (150/100)', 'PB < 21cm'],
+    regle_ia: 'Règle #12',
+    prediction: 'Risque éclampsie +72% dans 7 jours',
+    date: '2025-10-28',
+    semaines: 32
+  },
+  {
+    id: 'r2',
+    patient_id: 'p5',
+    patient_nom: 'Khadija Mbaye',
+    age: 19,
+    score: 68,
+    niveau: 'orange',
+    facteurs: ['Âge < 20', 'Anémie (PB 20cm)', 'CPN2 retard 5j'],
+    regle_ia: 'Règle #8',
+    prediction: 'Surveillance renforcée anémie',
+    date: '2025-10-27',
+    semaines: 28
+  },
+  {
+    id: 'r3',
+    patient_id: 'p8',
+    patient_nom: 'Seynabou Thiam',
+    age: 18,
+    score: 72,
+    niveau: 'orange',
+    facteurs: ['Âge < 19', 'Primipare', 'PB 19.5cm'],
+    regle_ia: 'Règle #15',
+    date: '2025-10-26',
+    semaines: 35
+  },
+  {
+    id: 'r4',
+    patient_id: 'p2',
+    patient_nom: 'Aissatou Ndiaye',
+    age: 28,
+    score: 25,
+    niveau: 'vert',
+    facteurs: [],
+    regle_ia: 'Règle #1',
+    date: '2025-10-28',
+    semaines: 27
+  },
+  {
+    id: 'r5',
+    patient_id: 'p3',
+    patient_nom: 'Mariama Sow',
+    age: 35,
+    score: 55,
+    niveau: 'orange',
+    facteurs: ['Âge > 35', 'Multipare (G4P3)'],
+    regle_ia: 'Règle #18',
+    date: '2025-10-25',
+    semaines: 37
+  }
+];
+
+// Références SONU
+export const mockReferencesSonu: ReferenceSonu[] = [
+  {
+    id: 's1',
+    patient_id: 'p1',
+    patient_nom: 'Fatou Diop',
+    alerte_heure: '2025-10-28T14:32:00',
+    transport_heure: '2025-10-28T15:10:00',
+    admission_heure: '2025-10-28T15:45:00',
+    contre_ref_heure: '2025-10-28T18:00:00',
+    statut: 'resolu',
+    type_alerte: 'HTA sévère + céphalées',
+    structure_origine: 'Poste de Santé Dakar Nord',
+    structure_sonu: 'Hôpital Principal Dakar',
+    delai_minutes: 193
+  },
+  {
+    id: 's2',
+    patient_id: 'p8',
+    patient_nom: 'Seynabou Thiam',
+    alerte_heure: '2025-10-27T09:15:00',
+    transport_heure: '2025-10-27T09:45:00',
+    admission_heure: '2025-10-27T10:20:00',
+    statut: 'admis',
+    type_alerte: 'Rupture prématurée membranes',
+    structure_origine: 'Hôpital Rufisque',
+    structure_sonu: 'Hôpital Le Dantec',
+    delai_minutes: 65
+  },
+  {
+    id: 's3',
+    patient_id: 'p5',
+    patient_nom: 'Khadija Mbaye',
+    alerte_heure: '2025-10-26T16:50:00',
+    transport_heure: '2025-10-26T17:30:00',
+    statut: 'en_route',
+    type_alerte: 'Hémorragie vaginale',
+    structure_origine: 'Centre de Santé Thiaroye',
+    structure_sonu: 'Hôpital Abass Ndao',
+  },
+  {
+    id: 's4',
+    patient_id: 'p3',
+    patient_nom: 'Mariama Sow',
+    alerte_heure: '2025-10-25T11:20:00',
+    transport_heure: '2025-10-25T12:05:00',
+    admission_heure: '2025-10-25T12:35:00',
+    contre_ref_heure: '2025-10-25T16:45:00',
+    statut: 'resolu',
+    type_alerte: 'Travail prématuré',
+    structure_origine: 'Hôpital Rufisque',
+    structure_sonu: 'Hôpital Principal Dakar',
+    delai_minutes: 75
+  }
+];
+
+// KPI Data
+export const mockKPIData: KPIData = {
+  patientes_totales: 1248,
+  cpn1_realisees: 1156,
+  cpn1_cible: 1248,
+  cpn4_realisees: 782,
+  cpn4_cible: 950,
+  cpon_pourcentage: 68.5,
+  risques_rouge: 12,
+  risques_orange: 48,
+  risques_vert: 1188,
+  references_delai_moyen: 112,
+  csu_enrolled: 1248,
+  csu_actifs: 1098,
+  csu_a_renouveler: 89,
+  pev_complet_pourcentage: 87.3,
+  letalite_taux: 2.4,
+  qualite_score: 78
+};
+
+// Vaccins
+export const mockVaccins: VaccinData[] = [
+  { id: 'vac1', patient_id: 'p1', vaccin: 'BCG', date_prevue: '2025-12-22', statut: 'prevu', structure: 'Poste de Santé Dakar Nord' },
+  { id: 'vac2', patient_id: 'p2', vaccin: 'BCG', date_prevue: '2026-01-27', statut: 'prevu', structure: 'Centre de Santé Pikine' },
+  { id: 'vac3', patient_id: 'p3', vaccin: 'BCG', date_prevue: '2025-11-17', statut: 'prevu', structure: 'Hôpital Rufisque' },
+  { id: 'vac4', patient_id: 'p4', vaccin: 'BCG', date_prevue: '2026-02-07', statut: 'prevu', structure: 'Poste de Santé Guédiawaye' },
+];
+
+// Structures sanitaires
+export const mockStructures = [
+  'Poste de Santé Dakar Nord',
+  'Centre de Santé Pikine',
+  'Hôpital Rufisque',
+  'Poste de Santé Guédiawaye',
+  'Centre de Santé Thiaroye',
+  'Hôpital Principal Dakar',
+  'Hôpital Le Dantec',
+  'Hôpital Abass Ndao'
+];
+
+// Districts
+export const mockDistricts = [
+  'Dakar Nord',
+  'Dakar Sud',
+  'Pikine',
+  'Guédiawaye',
+  'Rufisque',
+  'Thiès',
+  'Mbour',
+  'Kaolack'
+];
+
+// Agents
+export const mockAgents = [
+  'Aminata Sall',
+  'Khady Faye',
+  'Bineta Diallo',
+  'Fatou Sarr',
+  'Awa Ndiaye',
+  'Mariama Cissé',
+  'Seynabou Thiam',
+  'Aissatou Fall'
+];
+
+// Qualité données
+export const mockQualiteData = {
+  completude: 92,
+  coherence: 85,
+  opportunite: 71,
+  sync: 88,
+  alertes: [
+    { type: 'DDR > date visite', count: 3, severity: 'high' },
+    { type: 'Âge manquant', count: 7, severity: 'medium' },
+    { type: 'Tension invalide', count: 2, severity: 'high' },
+    { type: 'PB non renseigné', count: 12, severity: 'low' }
+  ]
+};
+
+// RDV en retard
+export const mockRdvRetards = [
+  { id: 'rdv1', patient_nom: 'Fatou Diop', age: 17, semaines: 32, retard_jours: 5, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord', telephone: '+221771234567' },
+  { id: 'rdv2', patient_nom: 'Khadija Mbaye', age: 19, semaines: 28, retard_jours: 4, agent: 'Aminata Sall', structure: 'Centre de Santé Thiaroye', telephone: '+221775678901' },
+  { id: 'rdv3', patient_nom: 'Seynabou Thiam', age: 18, semaines: 35, retard_jours: 8, agent: 'Fatou Sarr', structure: 'Hôpital Rufisque', telephone: '+221778901234' },
+];
+
+// Stats mensuelles CPN (pour graphiques)
+export const mockCPNMonthly = [
+  { mois: 'Jan 2025', cpn1: 98, cpn2: 87, cpn3: 76, cpn4: 65 },
+  { mois: 'Fév 2025', cpn1: 105, cpn2: 92, cpn3: 81, cpn4: 70 },
+  { mois: 'Mar 2025', cpn1: 112, cpn2: 98, cpn3: 85, cpn4: 73 },
+  { mois: 'Avr 2025', cpn1: 118, cpn2: 105, cpn3: 92, cpn4: 78 },
+  { mois: 'Mai 2025', cpn1: 125, cpn2: 110, cpn3: 98, cpn4: 82 },
+  { mois: 'Jun 2025', cpn1: 132, cpn2: 118, cpn3: 105, cpn4: 88 },
+  { mois: 'Jul 2025', cpn1: 128, cpn2: 122, cpn3: 110, cpn4: 92 },
+  { mois: 'Aoû 2025', cpn1: 135, cpn2: 128, cpn3: 115, cpn4: 95 },
+  { mois: 'Sep 2025', cpn1: 142, cpn2: 132, cpn3: 120, cpn4: 98 },
+  { mois: 'Oct 2025', cpn1: 148, cpn2: 138, cpn3: 125, cpn4: 102 },
+];
+
+// Couverture géographique (heatmap)
+export const mockCouvertureGeo = [
+  { district: 'Dakar Nord', couverture: 92.5, cpn1: 156, cpn4: 102 },
+  { district: 'Dakar Sud', couverture: 88.3, cpn1: 142, cpn4: 95 },
+  { district: 'Pikine', couverture: 85.7, cpn1: 178, cpn4: 115 },
+  { district: 'Guédiawaye', couverture: 81.2, cpn1: 134, cpn4: 88 },
+  { district: 'Rufisque', couverture: 79.8, cpn1: 125, cpn4: 82 },
+  { district: 'Thiès', couverture: 76.4, cpn1: 168, cpn4: 98 },
+  { district: 'Mbour', couverture: 72.1, cpn1: 145, cpn4: 87 },
+  { district: 'Kaolack', couverture: 68.9, cpn1: 152, cpn4: 91 },
+];
