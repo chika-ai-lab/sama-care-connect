@@ -1,17 +1,29 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Patient } from "@/data/mockData";
-import { Phone, Calendar, User, MapPin, AlertTriangle } from "lucide-react";
+import { Patient, mockRisquesIA } from "@/data/mockData";
+import { Phone, Calendar, User, MapPin, AlertTriangle, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface PatientCardProps {
   patient: Patient;
 }
 
 export const PatientCard = ({ patient }: PatientCardProps) => {
+  const navigate = useNavigate();
+  
+  const patientRisk = mockRisquesIA.find(r => r.patient_id === patient.id);
+  const isRedRisk = patientRisk?.niveau === 'rouge';
+  
   const handleAlertSonu = () => {
-    toast.success(`Alerte SONU envoyée pour ${patient.prenom} ${patient.nom}`);
+    if (isRedRisk) {
+      toast.success(`Alerte SONU envoyée pour ${patient.prenom} ${patient.nom}`);
+    }
+  };
+  
+  const handleViewDetails = () => {
+    navigate(`/dashboard/patient/${patient.id}`);
   };
 
   const getStatusBadge = (statut: string) => {
@@ -64,14 +76,24 @@ export const PatientCard = ({ patient }: PatientCardProps) => {
           </div>
         </div>
 
-        <div className="pt-2 border-t">
+        <div className="pt-2 border-t space-y-2">
+          <Button 
+            onClick={handleViewDetails}
+            variant="outline"
+            className="w-full"
+            size="sm"
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            Voir la fiche
+          </Button>
           <Button 
             onClick={handleAlertSonu} 
             className="w-full bg-[hsl(var(--status-rouge))] hover:bg-[hsl(var(--status-rouge))]/90 text-white"
             size="sm"
+            disabled={!isRedRisk}
           >
             <AlertTriangle className="h-4 w-4 mr-2" />
-            Alerte SONU
+            Alerte SONU {!isRedRisk && '(Rouge uniquement)'}
           </Button>
         </div>
       </CardContent>

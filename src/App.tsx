@@ -12,6 +12,7 @@ import CSU from "./pages/dashboard/CSU";
 import SONU from "./pages/dashboard/SONU";
 import PEV from "./pages/dashboard/PEV";
 import DHIS2 from "./pages/dashboard/DHIS2";
+import PatientDetail from "./pages/dashboard/PatientDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="sonu" element={<SONU />} />
             <Route path="pev" element={<PEV />} />
             <Route path="dhis2" element={<DHIS2 />} />
+            <Route path="patient/:patientId" element={<PatientDetail />} />
           </Route>
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
