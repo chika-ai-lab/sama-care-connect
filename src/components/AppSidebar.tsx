@@ -26,23 +26,71 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/data/mockData";
 
-const menuItems = [
-  { title: "Accueil KPI", url: "/dashboard", icon: Home },
-  { title: "Suivi CPN", url: "/dashboard/suivi", icon: Activity },
-  { title: "Risques IA", url: "/dashboard/risques", icon: AlertTriangle },
-  { title: "Références SONU", url: "/dashboard/sonu", icon: Ambulance },
-  { title: "Enrôlement CSU", url: "/dashboard/csu", icon: Shield },
-  { title: "PEV & Nutrition", url: "/dashboard/pev", icon: Syringe },
-  { title: "Export DHIS2", url: "/dashboard/dhis2", icon: Database },
+interface MenuItem {
+  title: string;
+  url: string;
+  icon: any;
+  allowedRoles: UserRole[];
+}
+
+const menuItems: MenuItem[] = [
+  { 
+    title: "Accueil KPI", 
+    url: "/dashboard", 
+    icon: Home,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Suivi CPN", 
+    url: "/dashboard/suivi", 
+    icon: Activity,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Risques IA", 
+    url: "/dashboard/risques", 
+    icon: AlertTriangle,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Références SONU", 
+    url: "/dashboard/sonu", 
+    icon: Ambulance,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Enrôlement CSU", 
+    url: "/dashboard/csu", 
+    icon: Shield,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "PEV & Nutrition", 
+    url: "/dashboard/pev", 
+    icon: Syringe,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Export DHIS2", 
+    url: "/dashboard/dhis2", 
+    icon: Database,
+    allowedRoles: ['responsable_district']
+  },
 ];
 
 export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { open } = useSidebar();
+  const { hasRole, logout } = useAuth();
   const [darkMode, setDarkMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter menu items based on user role
+  const visibleMenuItems = menuItems.filter(item => hasRole(item.allowedRoles));
 
   const isActive = (path: string) => {
     if (path === "/dashboard") {
@@ -52,6 +100,7 @@ export function AppSidebar() {
   };
 
   const handleLogout = () => {
+    logout();
     toast.success("Déconnexion réussie");
     navigate("/login");
   };
@@ -92,7 +141,7 @@ export function AppSidebar() {
         )}
 
         <SidebarMenu className="space-y-1">
-          {menuItems.map((item) => (
+          {visibleMenuItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
                 <NavLink

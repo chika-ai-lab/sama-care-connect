@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./components/DashboardLayout";
@@ -28,14 +29,46 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           
           <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="suivi" element={<Suivi />} />
-            <Route path="risques" element={<Risques />} />
-            <Route path="csu" element={<CSU />} />
-            <Route path="sonu" element={<SONU />} />
-            <Route path="pev" element={<PEV />} />
-            <Route path="dhis2" element={<DHIS2 />} />
-            <Route path="patient/:patientId" element={<PatientDetail />} />
+            <Route index element={
+              <ProtectedRoute allowedRoles={['sage_femme', 'responsable_structure', 'responsable_district', 'partenaire_ong', 'partenaire_regional', 'partenaire_gouvernemental']}>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="suivi" element={
+              <ProtectedRoute allowedRoles={['sage_femme', 'responsable_structure', 'responsable_district']}>
+                <Suivi />
+              </ProtectedRoute>
+            } />
+            <Route path="risques" element={
+              <ProtectedRoute allowedRoles={['sage_femme', 'responsable_structure', 'responsable_district']}>
+                <Risques />
+              </ProtectedRoute>
+            } />
+            <Route path="csu" element={
+              <ProtectedRoute allowedRoles={['sage_femme', 'responsable_structure', 'responsable_district']}>
+                <CSU />
+              </ProtectedRoute>
+            } />
+            <Route path="sonu" element={
+              <ProtectedRoute allowedRoles={['sage_femme', 'responsable_structure', 'responsable_district']}>
+                <SONU />
+              </ProtectedRoute>
+            } />
+            <Route path="pev" element={
+              <ProtectedRoute allowedRoles={['sage_femme', 'responsable_structure', 'responsable_district']}>
+                <PEV />
+              </ProtectedRoute>
+            } />
+            <Route path="dhis2" element={
+              <ProtectedRoute allowedRoles={['responsable_district']}>
+                <DHIS2 />
+              </ProtectedRoute>
+            } />
+            <Route path="patient/:patientId" element={
+              <ProtectedRoute allowedRoles={['sage_femme', 'responsable_structure', 'responsable_district']}>
+                <PatientDetail />
+              </ProtectedRoute>
+            } />
           </Route>
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
