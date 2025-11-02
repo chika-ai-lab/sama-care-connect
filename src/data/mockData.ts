@@ -450,6 +450,70 @@ export const mockAgents = [
   'Aissatou Fall'
 ];
 
+// User roles and permissions
+export type UserRole = 'sage_femme' | 'responsable_structure' | 'responsable_district' | 'partenaire_ong' | 'partenaire_regional' | 'partenaire_gouvernemental';
+
+export interface User {
+  id: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  role: UserRole;
+  structure?: string;
+  district?: string;
+  region?: string;
+}
+
+export const mockUsers: User[] = [
+  {
+    id: "U001",
+    nom: "Sall",
+    prenom: "Aminata",
+    email: "aminata.sall@sante.sn",
+    role: "sage_femme",
+    structure: "Poste de Santé Dakar Nord"
+  },
+  {
+    id: "U002",
+    nom: "Diop",
+    prenom: "Mariama",
+    email: "mariama.diop@sante.sn",
+    role: "responsable_structure",
+    structure: "Centre de Santé Pikine"
+  },
+  {
+    id: "U003",
+    nom: "Kane",
+    prenom: "Ousmane",
+    email: "ousmane.kane@sante.sn",
+    role: "responsable_district",
+    district: "District Dakar"
+  },
+  {
+    id: "U004",
+    nom: "Ndiaye",
+    prenom: "Fatou",
+    email: "fatou.ndiaye@ong.org",
+    role: "partenaire_ong",
+    region: "Dakar"
+  },
+  {
+    id: "U005",
+    nom: "Mbaye",
+    prenom: "Ibrahima",
+    email: "ibrahima.mbaye@msante.gouv.sn",
+    role: "partenaire_regional",
+    region: "Dakar"
+  },
+  {
+    id: "U006",
+    nom: "Sy",
+    prenom: "Aissatou",
+    email: "aissatou.sy@msante.gouv.sn",
+    role: "partenaire_gouvernemental"
+  }
+];
+
 // Qualité données
 export const mockQualiteData = {
   completude: 92,
@@ -487,12 +551,12 @@ export const mockCPNMonthly = [
 
 // Couverture géographique (heatmap)
 export const mockCouvertureGeo = [
-  { district: 'Dakar Nord', couverture: 92.5, cpn1: 156, cpn4: 102 },
-  { district: 'Dakar Sud', couverture: 88.3, cpn1: 142, cpn4: 95 },
-  { district: 'Pikine', couverture: 85.7, cpn1: 178, cpn4: 115 },
-  { district: 'Guédiawaye', couverture: 81.2, cpn1: 134, cpn4: 88 },
-  { district: 'Rufisque', couverture: 79.8, cpn1: 125, cpn4: 82 },
-  { district: 'Thiès', couverture: 76.4, cpn1: 168, cpn4: 98 },
-  { district: 'Mbour', couverture: 72.1, cpn1: 145, cpn4: 87 },
-  { district: 'Kaolack', couverture: 68.9, cpn1: 152, cpn4: 91 },
+  { structure: 'Poste de Santé Dakar Nord', district: 'Dakar Nord', patientes: 45, cpn1: 42, cible_cpn1: 45, couverture: 92.5, cpn4: 32 },
+  { structure: 'Centre de Santé Pikine', district: 'Pikine', patientes: 67, cpn1: 60, cible_cpn1: 67, couverture: 85.7, cpn4: 52 },
+  { structure: 'Hôpital Rufisque', district: 'Rufisque', patientes: 52, cpn1: 48, cible_cpn1: 52, couverture: 79.8, cpn4: 38 },
+  { structure: 'Poste de Santé Guédiawaye', district: 'Guédiawaye', patientes: 38, cpn1: 32, cible_cpn1: 38, couverture: 81.2, cpn4: 25 },
+  { structure: 'Centre de Santé Thiaroye', district: 'Dakar Sud', patientes: 41, cpn1: 38, cible_cpn1: 41, couverture: 88.3, cpn4: 30 },
+  { structure: 'Hôpital Principal Dakar', district: 'Dakar Nord', patientes: 88, cpn1: 84, cible_cpn1: 88, couverture: 92.5, cpn4: 70 },
+  { structure: 'Hôpital Le Dantec', district: 'Dakar Nord', patientes: 73, cpn1: 69, cible_cpn1: 73, couverture: 90.1, cpn4: 58 },
+  { structure: 'Hôpital Abass Ndao', district: 'Dakar Sud', patientes: 55, cpn1: 51, cible_cpn1: 55, couverture: 87.3, cpn4: 42 },
 ];

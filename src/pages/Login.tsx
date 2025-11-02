@@ -1,53 +1,35 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { mockUsers } from "@/data/mockData";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Login() {
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
-  const [timer, setTimer] = useState(60);
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const [selectedUserId, setSelectedUserId] = useState("");
 
-  const handleSendOTP = (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!phone) {
-      toast.error("Veuillez entrer votre numéro de téléphone");
-      return;
-    }
-    setOtpSent(true);
-    toast.success("Code OTP envoyé par SMS");
-    
-    // Simulate timer
-    const interval = setInterval(() => {
-      setTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  };
-
-  const handleVerifyOTP = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (otp.length === 6) {
-      toast.success("Connexion réussie");
+    const user = mockUsers.find(u => u.id === selectedUserId);
+    if (user) {
+      login(user);
       navigate("/dashboard");
-    } else {
-      toast.error("Code OTP invalide");
     }
   };
 
-  const handleResend = () => {
-    setTimer(60);
-    toast.success("Nouveau code OTP envoyé");
+  const getRoleLabel = (role: string) => {
+    const labels: Record<string, string> = {
+      sage_femme: "Sage-femme",
+      responsable_structure: "Responsable Structure",
+      responsable_district: "Responsable District",
+      partenaire_ong: "Partenaire ONG",
+      partenaire_regional: "Partenaire Régional",
+      partenaire_gouvernemental: "Partenaire Gouvernemental"
+    };
+    return labels[role] || role;
   };
 
   return (
@@ -62,65 +44,26 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {!otpSent ? (
-            <form onSubmit={handleSendOTP} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="phone">Numéro de téléphone</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+221 77 123 45 67"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                Envoyer OTP
-              </Button>
-              <div className="text-center text-xs text-muted-foreground space-x-4">
-                <a href="#" className="hover:underline">CGU</a>
-                <a href="#" className="hover:underline">Confidentialité</a>
-              </div>
-            </form>
-          ) : (
-            <form onSubmit={handleVerifyOTP} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Code OTP</Label>
-                <div className="flex justify-center">
-                  <InputOTP
-                    maxLength={6}
-                    value={otp}
-                    onChange={(value) => setOtp(value)}
-                  >
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                      <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                  </InputOTP>
-                </div>
-              </div>
-              <div className="text-center text-sm text-muted-foreground">
-                {timer > 0 ? (
-                  <span>Renvoyer dans {timer}s</span>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={handleResend}
-                    className="text-primary hover:underline"
-                  >
-                    Renvoyer le code
-                  </button>
-                )}
-              </div>
-              <Button type="submit" className="w-full">
-                Vérifier
-              </Button>
-            </form>
-          )}
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Sélectionner un utilisateur</label>
+              <Select value={selectedUserId} onValueChange={setSelectedUserId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choisir un profil..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {mockUsers.map((user) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.prenom} {user.nom} - {getRoleLabel(user.role)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button type="submit" className="w-full" disabled={!selectedUserId}>
+              Se connecter
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>

@@ -14,8 +14,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/contexts/AuthContext";
+import PartenaireAnalytics from "./dashboard/PartenaireAnalytics";
 
 export default function Dashboard() {
+  const { hasRole } = useAuth();
+
+  // Redirect partners to analytics view
+  if (hasRole(['partenaire_ong', 'partenaire_regional', 'partenaire_gouvernemental'])) {
+    return <PartenaireAnalytics />;
+  }
+
   return (
     <div className="p-6 space-y-6">
       {/* Filters Bar */}
