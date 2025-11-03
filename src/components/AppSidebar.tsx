@@ -37,6 +37,7 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
+  // Menu pour Sage-femme et Responsables
   { 
     title: "Accueil KPI", 
     url: "/dashboard", 
@@ -78,6 +79,13 @@ const menuItems: MenuItem[] = [
     url: "/dashboard/dhis2", 
     icon: Database,
     allowedRoles: ['responsable_district']
+  },
+  // Menu pour Partenaires - Données anonymisées uniquement
+  { 
+    title: "Analytics Global", 
+    url: "/dashboard/analytics", 
+    icon: Database,
+    allowedRoles: ['partenaire_ong', 'partenaire_regional', 'partenaire_gouvernemental']
   },
 ];
 
