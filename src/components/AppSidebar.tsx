@@ -154,13 +154,14 @@ export function AppSidebar() {
               <SidebarMenuButton asChild>
                 <NavLink
                   to={item.url}
-                  className={({ isActive: active }) =>
-                    `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
-                      active || isActive(item.url)
-                        ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                  className={({ isActive: active }) => {
+                    const isCurrentlyActive = active || isActive(item.url);
+                    return `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                      isCurrentlyActive
+                        ? "bg-primary text-white font-medium shadow-sm"
                         : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
-                    }`
-                  }
+                    }`;
+                  }}
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
                   {open && <span className="text-sm">{item.title}</span>}
