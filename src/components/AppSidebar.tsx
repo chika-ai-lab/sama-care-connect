@@ -157,7 +157,7 @@ export function AppSidebar() {
                   className={({ isActive: active }) =>
                     `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                       active || isActive(item.url)
-                        ? "bg-accent text-accent-foreground font-medium shadow-sm before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-6 before:w-1 before:rounded-r-full before:bg-accent"
+                        ? "bg-primary text-primary-foreground font-medium shadow-sm"
                         : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
                     }`
                   }
