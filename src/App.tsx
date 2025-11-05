@@ -32,7 +32,14 @@ const App = () => (
           <Route path="/dashboard" element={<DashboardLayout />}>
             {/* Dashboard principal - Sage-femme et Responsables */}
             <Route index element={
-              <ProtectedRoute allowedRoles={['sage_femme', 'responsable_structure', 'responsable_district']}>
+              <ProtectedRoute allowedRoles={[
+                'sage_femme', 
+                'responsable_structure', 
+                'responsable_district',
+                'partenaire_ong', 
+                'partenaire_regional', 
+                'partenaire_gouvernemental'
+              ]}>
                 <Dashboard />
               </ProtectedRoute>
             } />
