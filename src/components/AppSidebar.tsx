@@ -38,54 +38,82 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   // Menu pour Sage-femme et Responsables
-  { 
-    title: "Accueil KPI", 
-    url: "/dashboard", 
+  {
+    title: "Accueil KPI",
+    url: "/dashboard",
     icon: Home,
-    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+    allowedRoles: [
+      "sage_femme",
+      "responsable_structure",
+      "responsable_district",
+    ],
   },
-  { 
-    title: "Suivi CPN", 
-    url: "/dashboard/suivi", 
+  {
+    title: "Suivi CPN",
+    url: "/dashboard/suivi",
     icon: Activity,
-    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+    allowedRoles: [
+      "sage_femme",
+      "responsable_structure",
+      "responsable_district",
+    ],
   },
-  { 
-    title: "Risques IA", 
-    url: "/dashboard/risques", 
+  {
+    title: "Risques IA",
+    url: "/dashboard/risques",
     icon: AlertTriangle,
-    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+    allowedRoles: [
+      "sage_femme",
+      "responsable_structure",
+      "responsable_district",
+    ],
   },
-  { 
-    title: "Références SONU", 
-    url: "/dashboard/sonu", 
+  {
+    title: "Références SONU",
+    url: "/dashboard/sonu",
     icon: Ambulance,
-    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+    allowedRoles: [
+      "sage_femme",
+      "responsable_structure",
+      "responsable_district",
+    ],
   },
-  { 
-    title: "Enrôlement CSU", 
-    url: "/dashboard/csu", 
+  {
+    title: "Enrôlement CSU",
+    url: "/dashboard/csu",
     icon: Shield,
-    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+    allowedRoles: [
+      "sage_femme",
+      "responsable_structure",
+      "responsable_district",
+    ],
   },
-  { 
-    title: "PEV & Nutrition", 
-    url: "/dashboard/pev", 
+  {
+    title: "PEV & Nutrition",
+    url: "/dashboard/pev",
     icon: Syringe,
-    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+    allowedRoles: [
+      "sage_femme",
+      "responsable_structure",
+      "responsable_district",
+    ],
   },
-  { 
-    title: "Export DHIS2", 
-    url: "/dashboard/dhis2", 
+  {
+    title: "Export DHIS2",
+    url: "/dashboard/dhis2",
     icon: Database,
-    allowedRoles: ['responsable_district']
+    allowedRoles: ["responsable_district"],
   },
   // Menu pour Partenaires - Données anonymisées uniquement
-  { 
-    title: "Analytics Global", 
-    url: "/dashboard/analytics", 
+  {
+    title: "Analytics Global",
+    url: "/dashboard/analytics",
     icon: Database,
-    allowedRoles: ['partenaire_ong', 'partenaire_regional', 'partenaire_gouvernemental']
+    allowedRoles: [
+      "partenaire_ong",
+      "partenaire_regional",
+      "partenaire_gouvernemental",
+    ],
   },
 ];
 
@@ -98,7 +126,9 @@ export function AppSidebar() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter menu items based on user role
-  const visibleMenuItems = menuItems.filter(item => hasRole(item.allowedRoles));
+  const visibleMenuItems = menuItems.filter((item) =>
+    hasRole(item.allowedRoles)
+  );
 
   const isActive = (path: string) => {
     if (path === "/dashboard") {
@@ -156,18 +186,17 @@ export function AppSidebar() {
         )}
 
         <SidebarMenu className="space-y-1">
-          {menuItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
+          {visibleMenuItems.map((item) => {
+            const isCurrentlyActive = isActive(item.url);
+            return (
+              <SidebarMenuItem key={item.title}>
                 <NavLink
                   to={item.url}
-                  className={({ isActive: active }) =>
-                    `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
-                      active || isActive(item.url)
-                        ? "bg-accent text-accent-foreground font-medium shadow-sm before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-6 before:w-1 before:rounded-r-full before:bg-accent"
-                        : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
-                    }`
-                  }
+                  className={`relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                    isCurrentlyActive
+                      ? "bg-primary text-white font-medium shadow-sm"
+                      : "hover:bg-muted/50 text-foreground hover:text-foreground"
+                  }`}
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
                   {open && <span className="text-sm">{item.title}</span>}
