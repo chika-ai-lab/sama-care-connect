@@ -1,73 +1,111 @@
-# Welcome to your Lovable project
+# tekhe-care-dash
 
-## Project info
+## Description
 
-**URL**: https://lovable.dev/projects/5fb3ebc4-4fbd-4a03-b359-d87ce9c9c8f6
+tekhe-care-dash est un tableau de bord web dédié au système de santé maternelle de TEKHE. Cette application permet de suivre et gérer les données de santé maternelle, avec un accès basé sur les rôles pour différents utilisateurs tels que les sages-femmes, les responsables de structure, les responsables de district et les partenaires.
 
-## How can I edit this code?
+L'application offre une interface moderne et intuitive pour la surveillance des consultations prénatales (CPN), la gestion des risques via intelligence artificielle, l'enrôlement CSU, les références SONU, la prévention et la nutrition (PEV), ainsi que l'export vers DHIS2.
 
-There are several ways of editing your application.
+## Fonctionnalités
 
-**Use Lovable**
+- **Authentification sécurisée** : Connexion basée sur les rôles avec protection des routes.
+- **Tableau de bord principal** : Vue d'ensemble des indicateurs clés de performance (KPI) pour la santé maternelle.
+- **Suivi CPN** : Gestion des consultations prénatales.
+- **Risques IA** : Analyse des risques à l'aide d'intelligence artificielle.
+- **Enrôlement CSU** : Gestion des enrôlements CSU.
+- **Références SONU** : Suivi des références SONU.
+- **PEV & Nutrition** : Prévention et suivi nutritionnel.
+- **Export DHIS2** : Export des données vers DHIS2 (réservé aux responsables de district).
+- **Analytics Partenaires** : Données anonymisées pour les partenaires ONG, régionaux et gouvernementaux.
+- **Détail Patient** : Vue détaillée des informations patient.
+- **Interface responsive** : Design adaptatif utilisant Tailwind CSS et Shadcn UI.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/5fb3ebc4-4fbd-4a03-b359-d87ce9c9c8f6) and start prompting.
+## Technologies utilisées
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend** : React 18 avec TypeScript
+- **Build Tool** : Vite
+- **Routing** : React Router DOM
+- **UI Components** : Shadcn UI (basé sur Radix UI)
+- **Styling** : Tailwind CSS
+- **State Management** : TanStack React Query
+- **Forms** : React Hook Form avec Zod pour la validation
+- **Charts** : Recharts
+- **Icons** : Lucide React
+- **Package Manager** : pnpm
 
-**Use your preferred IDE**
+## Installation
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prérequis
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js (version 18 ou supérieure)
+- pnpm (recommandé) ou npm
 
-Follow these steps:
+### Étapes d'installation
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. Clonez le dépôt :
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+   ```bash
+   git clone <url-du-depot>
+   cd tekhe-care-dash
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2. Installez les dépendances :
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+   ```bash
+   pnpm install
+   ```
+
+3. Lancez l'application en mode développement :
+
+   ```bash
+   pnpm run dev
+   ```
+
+4. Ouvrez votre navigateur à l'adresse `http://localhost:5173` (ou le port indiqué par Vite).
+
+### Scripts disponibles
+
+- `pnpm run dev` : Lance le serveur de développement
+- `pnpm run build` : Construit l'application pour la production
+- `pnpm run build:dev` : Construit en mode développement
+- `pnpm run lint` : Vérifie le code avec ESLint
+- `pnpm run preview` : Prévisualise la version de production
+
+## Structure du projet
+
+```
+src/
+├── components/          # Composants réutilisables
+│   ├── ui/             # Composants Shadcn UI
+│   └── ...
+├── contexts/           # Contextes React (ex: AuthContext)
+├── data/               # Données mockées
+├── hooks/              # Hooks personnalisés
+├── lib/                # Utilitaires
+├── pages/              # Pages de l'application
+│   └── dashboard/      # Pages du tableau de bord
+└── ...
 ```
 
-**Edit a file directly in GitHub**
+## Rôles et accès
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- **Sage-femme** : Accès aux fonctionnalités de suivi, risques, CSU, SONU, PEV et détail patient.
+- **Responsable de structure** : Même accès que la sage-femme.
+- **Responsable de district** : Accès complet + export DHIS2.
+- **Partenaire ONG/Régional/Gouvernemental** : Accès aux analytics avec données anonymisées.
 
-**Use GitHub Codespaces**
+## Contribution
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. Forkez le projet
+2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/nouvelle-fonctionnalite`)
+3. Commitez vos changements (`git commit -am 'Ajout de nouvelle fonctionnalité'`)
+4. Poussez vers la branche (`git push origin feature/nouvelle-fonctionnalite`)
+5. Ouvrez une Pull Request
 
-## What technologies are used for this project?
+## Licence
 
-This project is built with:
+Ce projet est sous licence [MIT](LICENSE).
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Contact
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/5fb3ebc4-4fbd-4a03-b359-d87ce9c9c8f6) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Pour toute question ou support, contactez l'équipe TEKHE à [contact@tekhe.sn](mailto:contact@tekhe.sn).
