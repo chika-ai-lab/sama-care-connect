@@ -149,26 +149,24 @@ export function AppSidebar() {
         )}
 
         <SidebarMenu className="space-y-1">
-          {visibleMenuItems.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
+          {visibleMenuItems.map((item) => {
+            const isCurrentlyActive = isActive(item.url);
+            return (
+              <SidebarMenuItem key={item.title}>
                 <NavLink
                   to={item.url}
-                  className={({ isActive: active }) => {
-                    const isCurrentlyActive = active || isActive(item.url);
-                    return `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
-                      isCurrentlyActive
-                        ? "bg-primary text-white font-medium shadow-sm"
-                        : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
-                    }`;
-                  }}
+                  className={`relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
+                    isCurrentlyActive
+                      ? "bg-primary text-white font-medium shadow-sm"
+                      : "hover:bg-muted/50 text-foreground hover:text-foreground"
+                  }`}
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
                   {open && <span className="text-sm">{item.title}</span>}
                 </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </SidebarContent>
 
