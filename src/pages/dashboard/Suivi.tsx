@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/table";
 import { Phone, Mail } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Custom Tooltip component for theme adaptation
 interface TooltipProps {
@@ -50,6 +51,15 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
 };
 
 export default function Suivi() {
+  const { user } = useAuth();
+  
+  // Filtrer les rendez-vous selon le rôle de l'utilisateur
+  const userRdvRetards = user?.role === 'sage_femme'
+    ? mockRdvRetards.filter(rdv => rdv.agent === `${user.prenom} ${user.nom}`)
+    : user?.role === 'responsable_structure' && user.structure
+    ? mockRdvRetards.filter(rdv => rdv.structure === user.structure)
+    : mockRdvRetards;
+  
   const handleRappelSMS = (telephone: string, nom: string) => {
     toast.success(`Rappel SMS envoyé à ${nom} (${telephone})`);
   };
@@ -131,7 +141,7 @@ export default function Suivi() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mockRdvRetards.map((rdv) => (
+              {userRdvRetards.map((rdv) => (
                 <TableRow key={rdv.id}>
                   <TableCell className="font-medium">
                     {rdv.patient_nom}

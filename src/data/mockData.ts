@@ -16,6 +16,11 @@ export interface Patient {
   qr_code?: string;
   date_enrolement?: string;
   date_renouvellement?: string;
+  plan_naissance?: string;
+  imc?: number;
+  pb_muac?: number;
+  prise_ponderale?: number;
+  hemoglobine?: number;
 }
 
 export interface Visite {
@@ -29,6 +34,20 @@ export interface Visite {
   imc: number;
   agent: string;
   structure: string;
+  hemoglobine?: number;
+  checklist_ok?: boolean;
+  statut?: 'realise' | 'planifie' | 'a_planifier';
+  rappel_envoye?: boolean;
+}
+
+export interface VisiteCPoN {
+  id: string;
+  patient_id: string;
+  type: 'CPoN1' | 'CPoN2';
+  date_prevue: string;
+  date_realisee?: string;
+  statut: 'realise' | 'planifie' | 'rappel_envoye';
+  jours_postpartum: number;
 }
 
 export interface RisqueIA {
@@ -105,7 +124,12 @@ export const mockPatients: Patient[] = [
     statut_csu: 'actif',
     date_enrolement: '2025-04-01',
     date_renouvellement: '2026-04-01',
-    qr_code: 'QR_CSU_001'
+    qr_code: 'QR_CSU_001',
+    plan_naissance: 'Hôpital Principal Dakar',
+    imc: 20.5,
+    pb_muac: 20.5,
+    prise_ponderale: 8,
+    hemoglobine: 11
   },
   {
     id: 'p2',
@@ -222,16 +246,22 @@ export const mockPatients: Patient[] = [
 
 // Visites
 export const mockVisites: Visite[] = [
-  { id: 'v1', patient_id: 'p1', type: 'CPN1', date: '2025-04-10', poids: 58, tension: '140/95', pb: 20, imc: 22.5, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord' },
-  { id: 'v2', patient_id: 'p1', type: 'CPN2', date: '2025-06-15', poids: 62, tension: '145/98', pb: 19.5, imc: 24.0, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord' },
-  { id: 'v3', patient_id: 'p1', type: 'CPN3', date: '2025-08-20', poids: 68, tension: '150/100', pb: 19, imc: 26.3, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord' },
-  { id: 'v4', patient_id: 'p2', type: 'CPN1', date: '2025-05-25', poids: 65, tension: '120/80', pb: 24, imc: 25.5, agent: 'Khady Faye', structure: 'Centre de Santé Pikine' },
-  { id: 'v5', patient_id: 'p2', type: 'CPN2', date: '2025-07-30', poids: 68, tension: '118/78', pb: 25, imc: 26.6, agent: 'Khady Faye', structure: 'Centre de Santé Pikine' },
-  { id: 'v6', patient_id: 'p3', type: 'CPN1', date: '2025-03-20', poids: 72, tension: '115/75', pb: 26, imc: 28.1, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque' },
-  { id: 'v7', patient_id: 'p3', type: 'CPN2', date: '2025-05-25', poids: 76, tension: '118/77', pb: 26.5, imc: 29.6, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque' },
-  { id: 'v8', patient_id: 'p3', type: 'CPN3', date: '2025-07-30', poids: 80, tension: '120/80', pb: 27, imc: 31.2, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque' },
-  { id: 'v9', patient_id: 'p3', type: 'CPN4', date: '2025-09-15', poids: 84, tension: '122/82', pb: 27.5, imc: 32.8, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque' },
-  { id: 'v10', patient_id: 'p4', type: 'CPN1', date: '2025-06-10', poids: 60, tension: '110/70', pb: 23, imc: 23.4, agent: 'Fatou Sarr', structure: 'Poste de Santé Guédiawaye' },
+  { id: 'v1', patient_id: 'p1', type: 'CPN1', date: '2025-04-10', poids: 52, tension: '110/70', pb: 20, imc: 20.5, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord', hemoglobine: 11, checklist_ok: true, statut: 'realise' },
+  { id: 'v2', patient_id: 'p1', type: 'CPN2', date: '2025-07-15', poids: 58, tension: '120/80', pb: 20.5, imc: 21.8, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord', hemoglobine: 10.8, checklist_ok: true, statut: 'realise' },
+  { id: 'v3', patient_id: 'p1', type: 'CPN3', date: '2025-10-20', poids: 60, tension: '125/85', pb: 20.5, imc: 22.5, agent: 'Aminata Sall', structure: 'Poste de Santé Dakar Nord', statut: 'planifie', rappel_envoye: true },
+  { id: 'v4', patient_id: 'p2', type: 'CPN1', date: '2025-05-25', poids: 65, tension: '120/80', pb: 24, imc: 25.5, agent: 'Khady Faye', structure: 'Centre de Santé Pikine', hemoglobine: 12, checklist_ok: true, statut: 'realise' },
+  { id: 'v5', patient_id: 'p2', type: 'CPN2', date: '2025-07-30', poids: 68, tension: '118/78', pb: 25, imc: 26.6, agent: 'Khady Faye', structure: 'Centre de Santé Pikine', hemoglobine: 11.5, checklist_ok: true, statut: 'realise' },
+  { id: 'v6', patient_id: 'p3', type: 'CPN1', date: '2025-03-20', poids: 72, tension: '115/75', pb: 26, imc: 28.1, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque', hemoglobine: 12.5, checklist_ok: true, statut: 'realise' },
+  { id: 'v7', patient_id: 'p3', type: 'CPN2', date: '2025-05-25', poids: 76, tension: '118/77', pb: 26.5, imc: 29.6, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque', hemoglobine: 12.2, checklist_ok: true, statut: 'realise' },
+  { id: 'v8', patient_id: 'p3', type: 'CPN3', date: '2025-07-30', poids: 80, tension: '120/80', pb: 27, imc: 31.2, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque', hemoglobine: 11.8, checklist_ok: true, statut: 'realise' },
+  { id: 'v9', patient_id: 'p3', type: 'CPN4', date: '2025-09-15', poids: 84, tension: '122/82', pb: 27.5, imc: 32.8, agent: 'Bineta Diallo', structure: 'Hôpital Rufisque', hemoglobine: 11.5, checklist_ok: true, statut: 'realise' },
+  { id: 'v10', patient_id: 'p4', type: 'CPN1', date: '2025-06-10', poids: 60, tension: '110/70', pb: 23, imc: 23.4, agent: 'Fatou Sarr', structure: 'Poste de Santé Guédiawaye', hemoglobine: 11.2, checklist_ok: true, statut: 'realise' },
+];
+
+// Visites CPoN
+export const mockVisitesCPoN: VisiteCPoN[] = [
+  { id: 'cpon1', patient_id: 'p1', type: 'CPoN1', date_prevue: '2025-12-26', statut: 'planifie', jours_postpartum: 6 },
+  { id: 'cpon2', patient_id: 'p1', type: 'CPoN2', date_prevue: '2026-01-31', statut: 'rappel_envoye', jours_postpartum: 42 },
 ];
 
 // Risques IA
@@ -420,6 +450,77 @@ export const mockAgents = [
   'Aissatou Fall'
 ];
 
+// User roles and permissions
+export type UserRole = 'sage_femme' | 'responsable_structure' | 'responsable_district' | 'partenaire_ong' | 'partenaire_regional' | 'partenaire_gouvernemental';
+
+export interface User {
+  id: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
+  role: UserRole;
+  structure?: string;
+  district?: string;
+  region?: string;
+}
+
+export const mockUsers: User[] = [
+  {
+    id: "U001",
+    nom: "Sall",
+    prenom: "Aminata",
+    email: "aminata.sall@sante.sn",
+    telephone: "+221701234567",
+    role: "sage_femme",
+    structure: "Poste de Santé Dakar Nord"
+  },
+  {
+    id: "U002",
+    nom: "Diop",
+    prenom: "Mariama",
+    email: "mariama.diop@sante.sn",
+    telephone: "+221702345678",
+    role: "responsable_structure",
+    structure: "Centre de Santé Pikine"
+  },
+  {
+    id: "U003",
+    nom: "Kane",
+    prenom: "Ousmane",
+    email: "ousmane.kane@sante.sn",
+    telephone: "+221703456789",
+    role: "responsable_district",
+    district: "District Dakar"
+  },
+  {
+    id: "U004",
+    nom: "Ndiaye",
+    prenom: "Fatou",
+    email: "fatou.ndiaye@ong.org",
+    telephone: "+221704567890",
+    role: "partenaire_ong",
+    region: "Dakar"
+  },
+  {
+    id: "U005",
+    nom: "Mbaye",
+    prenom: "Ibrahima",
+    email: "ibrahima.mbaye@msante.gouv.sn",
+    telephone: "+221705678901",
+    role: "partenaire_regional",
+    region: "Dakar"
+  },
+  {
+    id: "U006",
+    nom: "Sy",
+    prenom: "Aissatou",
+    email: "aissatou.sy@msante.gouv.sn",
+    telephone: "+221706789012",
+    role: "partenaire_gouvernemental"
+  }
+];
+
 // Qualité données
 export const mockQualiteData = {
   completude: 92,
@@ -457,12 +558,12 @@ export const mockCPNMonthly = [
 
 // Couverture géographique (heatmap)
 export const mockCouvertureGeo = [
-  { district: 'Dakar Nord', couverture: 92.5, cpn1: 156, cpn4: 102 },
-  { district: 'Dakar Sud', couverture: 88.3, cpn1: 142, cpn4: 95 },
-  { district: 'Pikine', couverture: 85.7, cpn1: 178, cpn4: 115 },
-  { district: 'Guédiawaye', couverture: 81.2, cpn1: 134, cpn4: 88 },
-  { district: 'Rufisque', couverture: 79.8, cpn1: 125, cpn4: 82 },
-  { district: 'Thiès', couverture: 76.4, cpn1: 168, cpn4: 98 },
-  { district: 'Mbour', couverture: 72.1, cpn1: 145, cpn4: 87 },
-  { district: 'Kaolack', couverture: 68.9, cpn1: 152, cpn4: 91 },
+  { structure: 'Poste de Santé Dakar Nord', district: 'Dakar Nord', patientes: 45, cpn1: 42, cible_cpn1: 45, couverture: 92.5, cpn4: 32 },
+  { structure: 'Centre de Santé Pikine', district: 'Pikine', patientes: 67, cpn1: 60, cible_cpn1: 67, couverture: 85.7, cpn4: 52 },
+  { structure: 'Hôpital Rufisque', district: 'Rufisque', patientes: 52, cpn1: 48, cible_cpn1: 52, couverture: 79.8, cpn4: 38 },
+  { structure: 'Poste de Santé Guédiawaye', district: 'Guédiawaye', patientes: 38, cpn1: 32, cible_cpn1: 38, couverture: 81.2, cpn4: 25 },
+  { structure: 'Centre de Santé Thiaroye', district: 'Dakar Sud', patientes: 41, cpn1: 38, cible_cpn1: 41, couverture: 88.3, cpn4: 30 },
+  { structure: 'Hôpital Principal Dakar', district: 'Dakar Nord', patientes: 88, cpn1: 84, cible_cpn1: 88, couverture: 92.5, cpn4: 70 },
+  { structure: 'Hôpital Le Dantec', district: 'Dakar Nord', patientes: 73, cpn1: 69, cible_cpn1: 73, couverture: 90.1, cpn4: 58 },
+  { structure: 'Hôpital Abass Ndao', district: 'Dakar Sud', patientes: 55, cpn1: 51, cible_cpn1: 55, couverture: 87.3, cpn4: 42 },
 ];

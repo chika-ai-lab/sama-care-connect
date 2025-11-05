@@ -1,5 +1,5 @@
 import { KPICard } from "@/components/KPICard";
-import { mockKPIData } from "@/data/mockData";
+import { mockPatients, mockRisquesIA, mockReferencesSonu, mockVisites, mockStructures } from "@/data/mockData";
 import { 
   Users, 
   Calendar, 
@@ -9,23 +9,179 @@ import {
   Shield,
   Syringe,
   Activity,
-  Database
+  Database,
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/contexts/AuthContext";
+import PartenaireAnalytics from "./dashboard/PartenaireAnalytics";
+import { filterPatientsByUser, filterRisquesByUser, filterReferencesByUser } from "@/lib/dataFilters";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DateRange } from "react-day-picker";
+import { addDays, format, isWithinInterval, parseISO } from "date-fns";
+import { fr } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
 export default function Dashboard() {
+  const { hasRole, user } = useAuth();
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: addDays(new Date(), -30),
+    to: new Date(),
+  });
+  const [selectedStructure, setSelectedStructure] = useState<string>("all");
+  
+  // Filtrer les données selon le rôle de l'utilisateur
+  let userPatients = filterPatientsByUser(mockPatients, user);
+  
+  // Appliquer le filtre par structure (responsable district uniquement)
+  if (user?.role === 'responsable_district' && selectedStructure !== "all") {
+    userPatients = userPatients.filter(p => p.structure === selectedStructure);
+  }
+  
+  // Appliquer le filtre par date sur la date d'enrôlement
+  if (dateRange?.from) {
+    userPatients = userPatients.filter(p => {
+      if (!p.date_enrolement) return true;
+      const patientDate = parseISO(p.date_enrolement);
+      if (dateRange.to) {
+        return isWithinInterval(patientDate, { start: dateRange.from, end: dateRange.to });
+      }
+      return patientDate >= dateRange.from;
+    });
+  }
+  
+  const userRisques = filterRisquesByUser(mockRisquesIA, mockPatients, user);
+  const userReferences = filterReferencesByUser(mockReferencesSonu, mockPatients, user);
+  
+  // Calculer les KPI à partir des données filtrées
+  const patientes_totales = userPatients.length;
+  const cpn1_realisees = userPatients.filter(p => {
+    const visites = mockVisites.filter(v => v.patient_id === p.id && v.type === 'CPN1' && v.statut === 'realise');
+    return visites.length > 0;
+  }).length;
+  const cpn1_cible = patientes_totales;
+  const cpn4_realisees = userPatients.filter(p => {
+    const visites = mockVisites.filter(v => v.patient_id === p.id && v.type === 'CPN4' && v.statut === 'realise');
+    return visites.length > 0;
+  }).length;
+  const cpn4_cible = Math.floor(patientes_totales * 0.76); // Estimation basée sur les données mock
+  
+  const risques_rouge = userRisques.filter(r => r.niveau === 'rouge').length;
+  const risques_orange = userRisques.filter(r => r.niveau === 'orange').length;
+  const risques_vert = userRisques.filter(r => r.niveau === 'vert').length;
+  
+  const csu_enrolled = userPatients.length;
+  const csu_actifs = userPatients.filter(p => p.statut_csu === 'actif').length;
+  const csu_a_renouveler = userPatients.filter(p => p.statut_csu === 'a_renouveler').length;
+  
+  const referencesResolved = userReferences.filter(r => r.delai_minutes);
+  const references_delai_moyen = referencesResolved.length > 0 
+    ? Math.round(referencesResolved.reduce((sum, r) => sum + (r.delai_minutes || 0), 0) / referencesResolved.length)
+    : 0;
+
+  // Fonction d'export CSV
+  const handleExportCSV = () => {
+    const headers = ['Nom', 'Prénom', 'Age', 'Téléphone', 'Structure', 'Agent', 'Semaines', 'Statut CSU', 'Date enrôlement'];
+    const csvData = userPatients.map(p => [
+      p.nom,
+      p.prenom,
+      p.age,
+      p.telephone,
+      p.structure,
+      p.agent,
+      p.semaines,
+      p.statut_csu,
+      p.date_enrolement || ''
+    ]);
+    
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `patientes_${format(new Date(), 'yyyy-MM-dd')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success(`${userPatients.length} patientes exportées en CSV`);
+  };
+  
+  // Redirect partners to analytics view
+  if (hasRole(['partenaire_ong', 'partenaire_regional', 'partenaire_gouvernemental'])) {
+    return <PartenaireAnalytics />;
+  }
+
   return (
     <div className="p-6 space-y-6">
       {/* Filters Bar */}
       <div className="flex flex-wrap gap-4 items-center justify-between">
         <h1 className="text-3xl font-bold">Tableau de bord TEKHE</h1>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">Date range</Button>
-          <Button variant="outline" size="sm">District ↓</Button>
-          <Button variant="outline" size="sm">Structure ↓</Button>
-          <Button size="sm">Export CSV/JSON</Button>
+          {/* Date Range Picker */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm" className={cn(!dateRange && "text-muted-foreground")}>
+                <Calendar className="h-4 w-4 mr-2" />
+                {dateRange?.from ? (
+                  dateRange.to ? (
+                    <>
+                      {format(dateRange.from, "dd MMM", { locale: fr })} - {format(dateRange.to, "dd MMM", { locale: fr })}
+                    </>
+                  ) : (
+                    format(dateRange.from, "dd MMM yyyy", { locale: fr })
+                  )
+                ) : (
+                  <span>Période</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="end">
+              <CalendarComponent
+                initialFocus
+                mode="range"
+                defaultMonth={dateRange?.from}
+                selected={dateRange}
+                onSelect={setDateRange}
+                numberOfMonths={2}
+                locale={fr}
+              />
+            </PopoverContent>
+          </Popover>
+          
+          {/* Structure Filter (District responsable only) */}
+          {user?.role === 'responsable_district' && (
+            <Select value={selectedStructure} onValueChange={setSelectedStructure}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Toutes structures" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Toutes structures</SelectItem>
+                {mockStructures.map((structure) => (
+                  <SelectItem key={structure} value={structure}>
+                    {structure}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          
+          {/* Export CSV Button */}
+          <Button size="sm" onClick={handleExportCSV}>
+            <Download className="h-4 w-4 mr-2" />
+            Export CSV
+          </Button>
         </div>
       </div>
 
@@ -33,7 +189,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <KPICard
           title="Patientes totales"
-          value={mockKPIData.patientes_totales.toLocaleString()}
+          value={patientes_totales.toLocaleString()}
           icon={Users}
           color="default"
           trend="+12%"
@@ -41,33 +197,33 @@ export default function Dashboard() {
         
         <KPICard
           title="CPN1 réalisées"
-          value={`${mockKPIData.cpn1_realisees} / ${mockKPIData.cpn1_cible}`}
+          value={`${cpn1_realisees} / ${cpn1_cible}`}
           icon={Calendar}
           color="green"
           subtitle="Cible atteinte"
-          progress={Math.round((mockKPIData.cpn1_realisees / mockKPIData.cpn1_cible) * 100)}
+          progress={cpn1_cible > 0 ? Math.round((cpn1_realisees / cpn1_cible) * 100) : 0}
         />
         
         <KPICard
           title="CPN4 réalisées"
-          value={`${mockKPIData.cpn4_realisees} / ${mockKPIData.cpn4_cible}`}
+          value={`${cpn4_realisees} / ${cpn4_cible}`}
           icon={Calendar}
           color="orange"
           subtitle="En progression"
-          progress={Math.round((mockKPIData.cpn4_realisees / mockKPIData.cpn4_cible) * 100)}
+          progress={cpn4_cible > 0 ? Math.round((cpn4_realisees / cpn4_cible) * 100) : 0}
         />
         
         <KPICard
           title="CPON 6-42j"
-          value={`${mockKPIData.cpon_pourcentage}%`}
+          value="68.5%"
           icon={Baby}
           color="green"
-          progress={mockKPIData.cpon_pourcentage}
+          progress={68.5}
         />
         
         <KPICard
           title="Risques Rouge"
-          value={mockKPIData.risques_rouge}
+          value={risques_rouge}
           icon={AlertTriangle}
           color="red"
           subtitle="Nécessitent attention immédiate"
@@ -75,7 +231,7 @@ export default function Dashboard() {
         
         <KPICard
           title="Risques Orange"
-          value={mockKPIData.risques_orange}
+          value={risques_orange}
           icon={AlertTriangle}
           color="orange"
           subtitle="Surveillance renforcée"
@@ -83,7 +239,7 @@ export default function Dashboard() {
         
         <KPICard
           title="Risques Vert"
-          value={mockKPIData.risques_vert}
+          value={risques_vert}
           icon={AlertTriangle}
           color="green"
           subtitle="Suivi normal"
@@ -91,7 +247,7 @@ export default function Dashboard() {
         
         <KPICard
           title="Délai SONU moyen"
-          value={`${mockKPIData.references_delai_moyen} min`}
+          value={references_delai_moyen > 0 ? `${references_delai_moyen} min` : "N/A"}
           icon={Ambulance}
           color="orange"
           subtitle="Références urgentes"
@@ -99,7 +255,7 @@ export default function Dashboard() {
         
         <KPICard
           title="CSU Enrôlés"
-          value={mockKPIData.csu_enrolled.toLocaleString()}
+          value={csu_enrolled.toLocaleString()}
           icon={Shield}
           color="default"
           trend="+8%"
@@ -107,23 +263,23 @@ export default function Dashboard() {
         
         <KPICard
           title="CSU Actifs"
-          value={mockKPIData.csu_actifs.toLocaleString()}
+          value={csu_actifs.toLocaleString()}
           icon={Shield}
           color="green"
-          subtitle={`${mockKPIData.csu_a_renouveler} à renouveler`}
+          subtitle={`${csu_a_renouveler} à renouveler`}
         />
         
         <KPICard
           title="PEV doses complètes"
-          value={`${mockKPIData.pev_complet_pourcentage}%`}
+          value="87.3%"
           icon={Syringe}
           color="green"
-          progress={mockKPIData.pev_complet_pourcentage}
+          progress={87.3}
         />
         
         <KPICard
           title="Létalité obstétricale"
-          value={`${mockKPIData.letalite_taux}‰`}
+          value="2.4‰"
           icon={Activity}
           color="orange"
           subtitle="Pour 1000 naissances"
@@ -138,7 +294,7 @@ export default function Dashboard() {
               <Database className="h-5 w-5" />
               Qualité des données
             </CardTitle>
-            <div className="text-2xl font-bold">{mockKPIData.qualite_score}/100</div>
+            <div className="text-2xl font-bold">78/100</div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">

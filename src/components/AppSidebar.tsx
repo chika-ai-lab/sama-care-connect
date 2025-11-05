@@ -26,24 +26,79 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/data/mockData";
 
-const menuItems = [
-  { title: "Accueil KPI", url: "/dashboard", icon: Home },
-  { title: "Suivi CPN", url: "/dashboard/suivi", icon: Activity },
-  { title: "Risques IA", url: "/dashboard/risques", icon: AlertTriangle },
-  { title: "Références SONU", url: "/dashboard/sonu", icon: Ambulance },
-  { title: "Enrôlement CSU", url: "/dashboard/csu", icon: Shield },
-  { title: "PEV & Nutrition", url: "/dashboard/pev", icon: Syringe },
-  { title: "Export DHIS2", url: "/dashboard/dhis2", icon: Database },
+interface MenuItem {
+  title: string;
+  url: string;
+  icon: any;
+  allowedRoles: UserRole[];
+}
+
+const menuItems: MenuItem[] = [
+  // Menu pour Sage-femme et Responsables
+  { 
+    title: "Accueil KPI", 
+    url: "/dashboard", 
+    icon: Home,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Suivi CPN", 
+    url: "/dashboard/suivi", 
+    icon: Activity,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Risques IA", 
+    url: "/dashboard/risques", 
+    icon: AlertTriangle,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Références SONU", 
+    url: "/dashboard/sonu", 
+    icon: Ambulance,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Enrôlement CSU", 
+    url: "/dashboard/csu", 
+    icon: Shield,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "PEV & Nutrition", 
+    url: "/dashboard/pev", 
+    icon: Syringe,
+    allowedRoles: ['sage_femme', 'responsable_structure', 'responsable_district']
+  },
+  { 
+    title: "Export DHIS2", 
+    url: "/dashboard/dhis2", 
+    icon: Database,
+    allowedRoles: ['responsable_district']
+  },
+  // Menu pour Partenaires - Données anonymisées uniquement
+  { 
+    title: "Analytics Global", 
+    url: "/dashboard/analytics", 
+    icon: Database,
+    allowedRoles: ['partenaire_ong', 'partenaire_regional', 'partenaire_gouvernemental']
+  },
 ];
 
 export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { open } = useSidebar();
+  const { hasRole, logout } = useAuth();
   const [darkMode, setDarkMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter menu items based on user role
+  const visibleMenuItems = menuItems.filter(item => hasRole(item.allowedRoles));
 
   const isActive = (path: string) => {
     if (path === "/dashboard") {
@@ -53,6 +108,7 @@ export function AppSidebar() {
   };
 
   const handleLogout = () => {
+    logout();
     toast.success("Déconnexion réussie");
     navigate("/login");
   };
@@ -99,9 +155,7 @@ export function AppSidebar() {
           </div>
         )}
 
-        <SidebarMenu
-          className={cn("space-y-1", !open && "justify-center items-center")}
-        >
+        <SidebarMenu className="space-y-1">
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
@@ -110,17 +164,17 @@ export function AppSidebar() {
                   className={({ isActive: active }) =>
                     `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                       active || isActive(item.url)
-                        ? "bg-primary text-primary-foreground font-medium shadow-sm before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-6 before:w-1 before:rounded-r-full before:bg-primary"
-                        : "hover:bg-muted/50 text-muted-foreground"
+                        ? "bg-accent text-accent-foreground font-medium shadow-sm before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-6 before:w-1 before:rounded-r-full before:bg-accent"
+                        : "hover:bg-muted/50 text-muted-foreground hover:text-foreground"
                     }`
                   }
                 >
                   <item.icon className="h-5 w-5 shrink-0" />
                   {open && <span className="text-sm">{item.title}</span>}
                 </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </SidebarContent>
 
