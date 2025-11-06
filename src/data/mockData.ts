@@ -110,23 +110,42 @@ export interface VaccinData {
   structure: string;
 }
 
-// Patients
+// Générateur de noms sénégalais
+const noms = ["Diop", "Ndiaye", "Sow", "Fall", "Mbaye", "Gueye", "Cissé", "Thiam", "Sy", "Ba", "Diallo", "Sarr", "Faye", "Diouf", "Kane", "Niang", "Seck", "Ndao", "Touré", "Dème"];
+const prenoms = ["Fatou", "Aissatou", "Mariama", "Awa", "Khadija", "Mame", "Ami", "Seynabou", "Binta", "Ndèye", "Khady", "Aminata", "Rokhaya", "Coumba", "Astou", "Dieynaba", "Maimouna", "Yacine", "Fatoumata", "Adama"];
+
+// Helper pour générer des dates
+const generateDate = (daysAgo: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() - daysAgo);
+  return date.toISOString().split('T')[0];
+};
+
+const generateFutureDate = (daysAhead: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysAhead);
+  return date.toISOString().split('T')[0];
+};
+
+// Patients enrichis (50 patients)
 export const mockPatients: Patient[] = [
+  // Patients existants améliorés
   {
     id: "p1",
     nom: "Diop",
     prenom: "Fatou",
     age: 17,
     telephone: "+221771234567",
-    ddr: "2025-03-15",
-    terme_prevu: "2025-12-20",
+    ddr: generateDate(224),
+    terme_prevu: generateFutureDate(56),
     semaines: 32,
     structure: "Centre de Santé Pikine",
-    district: "Dakar Nord",
+    district: "Pikine",
+    region: "Dakar",
     agent: "Aminata Sall",
     statut_csu: "actif",
-    date_enrolement: "2025-04-01",
-    date_renouvellement: "2026-04-01",
+    date_enrolement: generateDate(210),
+    date_renouvellement: generateFutureDate(155),
     qr_code: "QR_CSU_001",
     plan_naissance: "Hôpital Principal Dakar",
     imc: 20.5,
@@ -140,15 +159,16 @@ export const mockPatients: Patient[] = [
     prenom: "Aissatou",
     age: 28,
     telephone: "+221772345678",
-    ddr: "2025-04-20",
-    terme_prevu: "2026-01-25",
+    ddr: generateDate(189),
+    terme_prevu: generateFutureDate(91),
     semaines: 27,
     structure: "Centre de Santé Pikine",
-    district: "Dakar Nord",
+    district: "Pikine",
+    region: "Dakar",
     agent: "Khady Faye",
     statut_csu: "actif",
-    date_enrolement: "2025-05-10",
-    date_renouvellement: "2026-05-10",
+    date_enrolement: generateDate(175),
+    date_renouvellement: generateFutureDate(190),
     qr_code: "QR_CSU_002",
   },
   {
@@ -157,15 +177,16 @@ export const mockPatients: Patient[] = [
     prenom: "Mariama",
     age: 35,
     telephone: "+221773456789",
-    ddr: "2025-02-10",
-    terme_prevu: "2025-11-15",
+    ddr: generateDate(259),
+    terme_prevu: generateFutureDate(21),
     semaines: 37,
     structure: "Poste de Santé Dakar Nord",
     district: "Dakar Nord",
+    region: "Dakar",
     agent: "Bineta Diallo",
     statut_csu: "a_renouveler",
-    date_enrolement: "2024-03-01",
-    date_renouvellement: "2025-11-30",
+    date_enrolement: generateDate(545),
+    date_renouvellement: generateDate(180),
     qr_code: "QR_CSU_003",
   },
   {
@@ -174,14 +195,15 @@ export const mockPatients: Patient[] = [
     prenom: "Awa",
     age: 22,
     telephone: "+221774567890",
-    ddr: "2025-05-01",
-    terme_prevu: "2026-02-05",
+    ddr: generateDate(175),
+    terme_prevu: generateFutureDate(105),
     semaines: 25,
     structure: "Poste de Santé Dakar Nord",
     district: "Dakar Nord",
+    region: "Dakar",
     agent: "Fatou Sarr",
     statut_csu: "en_attente",
-    date_enrolement: "2025-06-01",
+    date_enrolement: generateDate(145),
     qr_code: "QR_CSU_004",
   },
   {
@@ -190,15 +212,16 @@ export const mockPatients: Patient[] = [
     prenom: "Khadija",
     age: 19,
     telephone: "+221775678901",
-    ddr: "2025-04-05",
-    terme_prevu: "2026-01-10",
+    ddr: generateDate(196),
+    terme_prevu: generateFutureDate(84),
     semaines: 28,
     structure: "Centre de Santé Thiaroye",
     district: "Dakar Sud",
+    region: "Dakar",
     agent: "Aminata Sall",
     statut_csu: "actif",
-    date_enrolement: "2025-05-01",
-    date_renouvellement: "2026-05-01",
+    date_enrolement: generateDate(165),
+    date_renouvellement: generateFutureDate(200),
     qr_code: "QR_CSU_005",
   },
   {
@@ -207,15 +230,16 @@ export const mockPatients: Patient[] = [
     prenom: "Mame",
     age: 31,
     telephone: "+221776789012",
-    ddr: "2025-03-20",
-    terme_prevu: "2025-12-25",
+    ddr: generateDate(217),
+    terme_prevu: generateFutureDate(63),
     semaines: 31,
     structure: "Poste de Santé Dakar Nord",
     district: "Dakar Nord",
+    region: "Dakar",
     agent: "Khady Faye",
     statut_csu: "actif",
-    date_enrolement: "2025-04-15",
-    date_renouvellement: "2026-04-15",
+    date_enrolement: generateDate(203),
+    date_renouvellement: generateFutureDate(162),
     qr_code: "QR_CSU_006",
   },
   {
@@ -224,15 +248,16 @@ export const mockPatients: Patient[] = [
     prenom: "Ami",
     age: 26,
     telephone: "+221777890123",
-    ddr: "2025-05-15",
-    terme_prevu: "2026-02-19",
+    ddr: generateDate(161),
+    terme_prevu: generateFutureDate(119),
     semaines: 23,
     structure: "Centre de Santé Pikine",
     district: "Pikine",
+    region: "Dakar",
     agent: "Bineta Diallo",
     statut_csu: "actif",
-    date_enrolement: "2025-06-10",
-    date_renouvellement: "2026-06-10",
+    date_enrolement: generateDate(130),
+    date_renouvellement: generateFutureDate(235),
     qr_code: "QR_CSU_007",
   },
   {
@@ -241,368 +266,324 @@ export const mockPatients: Patient[] = [
     prenom: "Seynabou",
     age: 18,
     telephone: "+221778901234",
-    ddr: "2025-02-28",
-    terme_prevu: "2025-12-03",
+    ddr: generateDate(245),
+    terme_prevu: generateFutureDate(35),
     semaines: 35,
     structure: "Hôpital Rufisque",
     district: "Rufisque",
+    region: "Dakar",
     agent: "Fatou Sarr",
     statut_csu: "a_renouveler",
-    date_enrolement: "2024-04-01",
-    date_renouvellement: "2025-12-01",
+    date_enrolement: generateDate(490),
+    date_renouvellement: generateDate(125),
     qr_code: "QR_CSU_008",
   },
+  // Nouveaux patients (p9-p50)
+  ...Array.from({ length: 42 }, (_, i) => {
+    const id = `p${i + 9}`;
+    const nomIndex = Math.floor(Math.random() * noms.length);
+    const prenomIndex = Math.floor(Math.random() * prenoms.length);
+    const age = 16 + Math.floor(Math.random() * 28); // 16-43 ans
+    const semaines = 8 + Math.floor(Math.random() * 32); // 8-39 semaines
+    const daysPregnant = semaines * 7;
+    const daysUntilTerm = (40 - semaines) * 7;
+    
+    const structures = [
+      { name: "Centre de Santé Pikine", district: "Pikine", region: "Dakar" },
+      { name: "Poste de Santé Dakar Nord", district: "Dakar Nord", region: "Dakar" },
+      { name: "Centre de Santé Thiaroye", district: "Dakar Sud", region: "Dakar" },
+      { name: "Hôpital Rufisque", district: "Rufisque", region: "Dakar" },
+      { name: "Poste de Santé Guédiawaye", district: "Guédiawaye", region: "Dakar" },
+      { name: "Hôpital Principal Dakar", district: "Dakar Nord", region: "Dakar" },
+      { name: "Hôpital Le Dantec", district: "Dakar Nord", region: "Dakar" },
+      { name: "Hôpital Abass Ndao", district: "Dakar Sud", region: "Dakar" },
+    ];
+    const structure = structures[Math.floor(Math.random() * structures.length)];
+    const agents = ["Aminata Sall", "Khady Faye", "Bineta Diallo", "Fatou Sarr", "Awa Ndiaye", "Mariama Cissé"];
+    const statuts: ("actif" | "en_attente" | "a_renouveler")[] = ["actif", "actif", "actif", "en_attente", "a_renouveler"];
+    
+    return {
+      id,
+      nom: noms[nomIndex],
+      prenom: prenoms[prenomIndex],
+      age,
+      telephone: `+22177${String(8900000 + i + 200).padStart(7, '0')}`,
+      ddr: generateDate(daysPregnant),
+      terme_prevu: generateFutureDate(daysUntilTerm),
+      semaines,
+      structure: structure.name,
+      district: structure.district,
+      region: structure.region,
+      agent: agents[Math.floor(Math.random() * agents.length)],
+      statut_csu: statuts[Math.floor(Math.random() * statuts.length)],
+      date_enrolement: generateDate(daysPregnant - 14),
+      date_renouvellement: generateFutureDate(daysUntilTerm + 30 + Math.floor(Math.random() * 150)),
+      qr_code: `QR_CSU_${String(i + 9).padStart(3, '0')}`,
+      imc: 18 + Math.random() * 12,
+      pb_muac: 19 + Math.random() * 8,
+      hemoglobine: age < 20 ? 9.5 + Math.random() * 3 : 10.5 + Math.random() * 3,
+    } as Patient;
+  }),
 ];
 
-// Visites
+// Visites enrichies (générer des visites pour tous les patients)
 export const mockVisites: Visite[] = [
-  {
-    id: "v1",
-    patient_id: "p1",
-    type: "CPN1",
-    date: "2025-04-10",
-    poids: 52,
-    tension: "110/70",
-    pb: 20,
-    imc: 20.5,
-    agent: "Aminata Sall",
-    structure: "Poste de Santé Dakar Nord",
-    hemoglobine: 11,
-    checklist_ok: true,
-    statut: "realise",
-  },
-  {
-    id: "v2",
-    patient_id: "p1",
-    type: "CPN2",
-    date: "2025-07-15",
-    poids: 58,
-    tension: "120/80",
-    pb: 20.5,
-    imc: 21.8,
-    agent: "Aminata Sall",
-    structure: "Poste de Santé Dakar Nord",
-    hemoglobine: 10.8,
-    checklist_ok: true,
-    statut: "realise",
-  },
-  {
-    id: "v3",
-    patient_id: "p1",
-    type: "CPN3",
-    date: "2025-10-20",
-    poids: 60,
-    tension: "125/85",
-    pb: 20.5,
-    imc: 22.5,
-    agent: "Aminata Sall",
-    structure: "Poste de Santé Dakar Nord",
-    statut: "planifie",
-    rappel_envoye: true,
-  },
-  {
-    id: "v4",
-    patient_id: "p2",
-    type: "CPN1",
-    date: "2025-05-25",
-    poids: 65,
-    tension: "120/80",
-    pb: 24,
-    imc: 25.5,
-    agent: "Khady Faye",
-    structure: "Centre de Santé Pikine",
-    hemoglobine: 12,
-    checklist_ok: true,
-    statut: "realise",
-  },
-  {
-    id: "v5",
-    patient_id: "p2",
-    type: "CPN2",
-    date: "2025-07-30",
-    poids: 68,
-    tension: "118/78",
-    pb: 25,
-    imc: 26.6,
-    agent: "Khady Faye",
-    structure: "Centre de Santé Pikine",
-    hemoglobine: 11.5,
-    checklist_ok: true,
-    statut: "realise",
-  },
-  {
-    id: "v6",
-    patient_id: "p3",
-    type: "CPN1",
-    date: "2025-03-20",
-    poids: 72,
-    tension: "115/75",
-    pb: 26,
-    imc: 28.1,
-    agent: "Bineta Diallo",
-    structure: "Hôpital Rufisque",
-    hemoglobine: 12.5,
-    checklist_ok: true,
-    statut: "realise",
-  },
-  {
-    id: "v7",
-    patient_id: "p3",
-    type: "CPN2",
-    date: "2025-05-25",
-    poids: 76,
-    tension: "118/77",
-    pb: 26.5,
-    imc: 29.6,
-    agent: "Bineta Diallo",
-    structure: "Hôpital Rufisque",
-    hemoglobine: 12.2,
-    checklist_ok: true,
-    statut: "realise",
-  },
-  {
-    id: "v8",
-    patient_id: "p3",
-    type: "CPN3",
-    date: "2025-07-30",
-    poids: 80,
-    tension: "120/80",
-    pb: 27,
-    imc: 31.2,
-    agent: "Bineta Diallo",
-    structure: "Hôpital Rufisque",
-    hemoglobine: 11.8,
-    checklist_ok: true,
-    statut: "realise",
-  },
-  {
-    id: "v9",
-    patient_id: "p3",
-    type: "CPN4",
-    date: "2025-09-15",
-    poids: 84,
-    tension: "122/82",
-    pb: 27.5,
-    imc: 32.8,
-    agent: "Bineta Diallo",
-    structure: "Hôpital Rufisque",
-    hemoglobine: 11.5,
-    checklist_ok: true,
-    statut: "realise",
-  },
-  {
-    id: "v10",
-    patient_id: "p4",
-    type: "CPN1",
-    date: "2025-06-10",
-    poids: 60,
-    tension: "110/70",
-    pb: 23,
-    imc: 23.4,
-    agent: "Fatou Sarr",
-    structure: "Poste de Santé Dakar Nord",
-    hemoglobine: 11.2,
-    checklist_ok: true,
-    statut: "realise",
-  },
+  ...mockPatients.flatMap((patient) => {
+    const visites: Visite[] = [];
+    const stages: ("CPN1" | "CPN2" | "CPN3" | "CPN4")[] = ["CPN1", "CPN2", "CPN3", "CPN4"];
+    const weeksForStage = [12, 20, 28, 36];
+    
+    stages.forEach((type, index) => {
+      if (patient.semaines >= weeksForStage[index]) {
+        const daysAgo = (patient.semaines - weeksForStage[index]) * 7 + Math.floor(Math.random() * 10);
+        visites.push({
+          id: `v${patient.id}_${type}`,
+          patient_id: patient.id,
+          type,
+          date: generateDate(daysAgo),
+          poids: 50 + Math.random() * 25 + index * 3,
+          tension: `${110 + Math.floor(Math.random() * 20)}/${70 + Math.floor(Math.random() * 15)}`,
+          pb: 20 + Math.random() * 7,
+          imc: patient.imc || 20 + Math.random() * 8,
+          agent: patient.agent,
+          structure: patient.structure,
+          hemoglobine: patient.hemoglobine || 10 + Math.random() * 3,
+          checklist_ok: Math.random() > 0.1,
+          statut: "realise",
+        });
+      } else if (patient.semaines >= weeksForStage[index] - 2) {
+        // Visite planifiée pour bientôt
+        visites.push({
+          id: `v${patient.id}_${type}_plan`,
+          patient_id: patient.id,
+          type,
+          date: generateFutureDate((weeksForStage[index] - patient.semaines) * 7),
+          poids: 0,
+          tension: "",
+          pb: 0,
+          imc: 0,
+          agent: patient.agent,
+          structure: patient.structure,
+          statut: "planifie",
+          rappel_envoye: Math.random() > 0.5,
+        });
+      }
+    });
+    
+    return visites;
+  }),
 ];
 
-// Visites CPoN
+// Visites CPoN enrichies
 export const mockVisitesCPoN: VisiteCPoN[] = [
-  {
-    id: "cpon1",
-    patient_id: "p1",
-    type: "CPoN1",
-    date_prevue: "2025-12-26",
-    statut: "planifie",
-    jours_postpartum: 6,
-  },
-  {
-    id: "cpon2",
-    patient_id: "p1",
-    type: "CPoN2",
-    date_prevue: "2026-01-31",
-    statut: "rappel_envoye",
-    jours_postpartum: 42,
-  },
+  ...mockPatients
+    .filter((p) => p.semaines > 38)
+    .slice(0, 15)
+    .flatMap((patient) => {
+      const birthDate = new Date(patient.terme_prevu);
+      const cpon1Date = new Date(birthDate);
+      cpon1Date.setDate(cpon1Date.getDate() + 6);
+      const cpon2Date = new Date(birthDate);
+      cpon2Date.setDate(cpon2Date.getDate() + 42);
+      
+      return [
+        {
+          id: `cpon1_${patient.id}`,
+          patient_id: patient.id,
+          type: "CPoN1" as const,
+          date_prevue: cpon1Date.toISOString().split('T')[0],
+          statut: Math.random() > 0.5 ? ("realise" as const) : ("planifie" as const),
+          jours_postpartum: 6,
+        },
+        {
+          id: `cpon2_${patient.id}`,
+          patient_id: patient.id,
+          type: "CPoN2" as const,
+          date_prevue: cpon2Date.toISOString().split('T')[0],
+          statut: Math.random() > 0.7 ? ("realise" as const) : ("rappel_envoye" as const),
+          jours_postpartum: 42,
+        },
+      ];
+    }),
 ];
 
-// Risques IA
+// Risques IA enrichis
 export const mockRisquesIA: RisqueIA[] = [
-  {
-    id: "r1",
-    patient_id: "p1",
-    patient_nom: "Fatou Diop",
-    age: 17,
-    score: 85,
-    niveau: "rouge",
-    facteurs: ["Âge < 18", "HTA (150/100)", "PB < 21cm"],
-    regle_ia: "Règle #12",
-    prediction: "Risque éclampsie +72% dans 7 jours",
-    date: "2025-10-28",
-    semaines: 32,
-  },
-  {
-    id: "r2",
-    patient_id: "p5",
-    patient_nom: "Khadija Mbaye",
-    age: 19,
-    score: 68,
-    niveau: "orange",
-    facteurs: ["Âge < 20", "Anémie (PB 20cm)", "CPN2 retard 5j"],
-    regle_ia: "Règle #8",
-    prediction: "Surveillance renforcée anémie",
-    date: "2025-10-27",
-    semaines: 28,
-  },
-  {
-    id: "r3",
-    patient_id: "p8",
-    patient_nom: "Seynabou Thiam",
-    age: 18,
-    score: 72,
-    niveau: "orange",
-    facteurs: ["Âge < 19", "Primipare", "PB 19.5cm"],
-    regle_ia: "Règle #15",
-    date: "2025-10-26",
-    semaines: 35,
-  },
-  {
-    id: "r4",
-    patient_id: "p2",
-    patient_nom: "Aissatou Ndiaye",
-    age: 28,
-    score: 25,
-    niveau: "vert",
-    facteurs: [],
-    regle_ia: "Règle #1",
-    date: "2025-10-28",
-    semaines: 27,
-  },
-  {
-    id: "r5",
-    patient_id: "p3",
-    patient_nom: "Mariama Sow",
-    age: 35,
-    score: 55,
-    niveau: "orange",
-    facteurs: ["Âge > 35", "Multipare (G4P3)"],
-    regle_ia: "Règle #18",
-    date: "2025-10-25",
-    semaines: 37,
-  },
+  ...mockPatients.map((patient, index) => {
+    let niveau: "rouge" | "orange" | "vert";
+    let score: number;
+    let facteurs: string[] = [];
+    
+    // Critères de risque
+    if (patient.age < 18) {
+      facteurs.push("Âge < 18");
+      score = 70 + Math.random() * 20;
+    } else if (patient.age > 35) {
+      facteurs.push("Âge > 35");
+      score = 50 + Math.random() * 20;
+    } else {
+      score = 10 + Math.random() * 30;
+    }
+    
+    if (patient.hemoglobine && patient.hemoglobine < 11) {
+      facteurs.push(`Anémie (Hb ${patient.hemoglobine.toFixed(1)})`);
+      score += 15;
+    }
+    
+    if (patient.pb_muac && patient.pb_muac < 21) {
+      facteurs.push(`PB < 21cm (${patient.pb_muac.toFixed(1)})`);
+      score += 20;
+    }
+    
+    if (patient.semaines > 36 && patient.age < 19) {
+      facteurs.push("Primipare proche du terme");
+      score += 10;
+    }
+    
+    // Déterminer le niveau
+    if (score >= 70) {
+      niveau = "rouge";
+    } else if (score >= 40) {
+      niveau = "orange";
+    } else {
+      niveau = "vert";
+    }
+    
+    return {
+      id: `r${patient.id}`,
+      patient_id: patient.id,
+      patient_nom: `${patient.prenom} ${patient.nom}`,
+      age: patient.age,
+      score: Math.round(score),
+      niveau,
+      facteurs,
+      regle_ia: `Règle #${Math.floor(Math.random() * 25) + 1}`,
+      prediction: niveau === "rouge" ? "Risque élevé - surveillance renforcée" : niveau === "orange" ? "Surveillance renforcée recommandée" : undefined,
+      date: generateDate(Math.floor(Math.random() * 7)),
+      semaines: patient.semaines,
+    };
+  }),
 ];
 
-// Références SONU
+// Références SONU enrichies
 export const mockReferencesSonu: ReferenceSonu[] = [
-  {
-    id: "s1",
-    patient_id: "p1",
-    patient_nom: "Fatou Diop",
-    alerte_heure: "2025-10-28T14:32:00",
-    transport_heure: "2025-10-28T15:10:00",
-    admission_heure: "2025-10-28T15:45:00",
-    contre_ref_heure: "2025-10-28T18:00:00",
-    statut: "resolu",
-    type_alerte: "HTA sévère + céphalées",
-    structure_origine: "Poste de Santé Dakar Nord",
-    structure_sonu: "Hôpital Principal Dakar",
-    delai_minutes: 193,
-  },
-  {
-    id: "s2",
-    patient_id: "p8",
-    patient_nom: "Seynabou Thiam",
-    alerte_heure: "2025-10-27T09:15:00",
-    transport_heure: "2025-10-27T09:45:00",
-    admission_heure: "2025-10-27T10:20:00",
-    statut: "admis",
-    type_alerte: "Rupture prématurée membranes",
-    structure_origine: "Hôpital Rufisque",
-    structure_sonu: "Hôpital Le Dantec",
-    delai_minutes: 65,
-  },
-  {
-    id: "s3",
-    patient_id: "p5",
-    patient_nom: "Khadija Mbaye",
-    alerte_heure: "2025-10-26T16:50:00",
-    transport_heure: "2025-10-26T17:30:00",
-    statut: "en_route",
-    type_alerte: "Hémorragie vaginale",
-    structure_origine: "Centre de Santé Thiaroye",
-    structure_sonu: "Hôpital Abass Ndao",
-  },
-  {
-    id: "s4",
-    patient_id: "p3",
-    patient_nom: "Mariama Sow",
-    alerte_heure: "2025-10-25T11:20:00",
-    transport_heure: "2025-10-25T12:05:00",
-    admission_heure: "2025-10-25T12:35:00",
-    contre_ref_heure: "2025-10-25T16:45:00",
-    statut: "resolu",
-    type_alerte: "Travail prématuré",
-    structure_origine: "Hôpital Rufisque",
-    structure_sonu: "Hôpital Principal Dakar",
-    delai_minutes: 75,
-  },
+  ...mockPatients
+    .filter((p) => p.age < 20 || p.age > 35 || p.semaines > 36)
+    .slice(0, 20)
+    .map((patient, index) => {
+      const hoursAgo = Math.floor(Math.random() * 72);
+      const alerteDate = new Date();
+      alerteDate.setHours(alerteDate.getHours() - hoursAgo);
+      
+      const transportDelay = 20 + Math.floor(Math.random() * 90);
+      const transportDate = new Date(alerteDate);
+      transportDate.setMinutes(transportDate.getMinutes() + transportDelay);
+      
+      const admissionDelay = 15 + Math.floor(Math.random() * 60);
+      const admissionDate = new Date(transportDate);
+      admissionDate.setMinutes(admissionDate.getMinutes() + admissionDelay);
+      
+      const statuts: ("alerte" | "en_route" | "admis" | "resolu")[] = ["alerte", "en_route", "admis", "resolu"];
+      const statut = statuts[Math.min(Math.floor(hoursAgo / 12), 3)];
+      
+      const alertes = [
+        "HTA sévère + céphalées",
+        "Rupture prématurée membranes",
+        "Hémorragie vaginale",
+        "Travail prématuré",
+        "Éclampsie",
+        "Souffrance fœtale",
+        "Présentation anormale",
+      ];
+      
+      const sonuStructures = [
+        "Hôpital Principal Dakar",
+        "Hôpital Le Dantec",
+        "Hôpital Abass Ndao",
+      ];
+      
+      return {
+        id: `s${patient.id}`,
+        patient_id: patient.id,
+        patient_nom: `${patient.prenom} ${patient.nom}`,
+        alerte_heure: alerteDate.toISOString(),
+        transport_heure: statut !== "alerte" ? transportDate.toISOString() : undefined,
+        admission_heure: (statut === "admis" || statut === "resolu") ? admissionDate.toISOString() : undefined,
+        contre_ref_heure: statut === "resolu" ? new Date(admissionDate.getTime() + 1000 * 60 * (120 + Math.random() * 180)).toISOString() : undefined,
+        statut,
+        type_alerte: alertes[Math.floor(Math.random() * alertes.length)],
+        structure_origine: patient.structure,
+        structure_sonu: sonuStructures[Math.floor(Math.random() * sonuStructures.length)],
+        delai_minutes: (statut === "admis" || statut === "resolu") ? transportDelay + admissionDelay : undefined,
+      };
+    }),
 ];
 
-// KPI Data
+// KPI Data enrichies
 export const mockKPIData: KPIData = {
-  patientes_totales: 1248,
-  cpn1_realisees: 1156,
-  cpn1_cible: 1248,
-  cpn4_realisees: 782,
-  cpn4_cible: 950,
+  patientes_totales: mockPatients.length,
+  cpn1_realisees: mockVisites.filter((v) => v.type === "CPN1" && v.statut === "realise").length,
+  cpn1_cible: mockPatients.length,
+  cpn4_realisees: mockVisites.filter((v) => v.type === "CPN4" && v.statut === "realise").length,
+  cpn4_cible: Math.floor(mockPatients.length * 0.76),
   cpon_pourcentage: 68.5,
-  risques_rouge: 12,
-  risques_orange: 48,
-  risques_vert: 1188,
-  references_delai_moyen: 112,
-  csu_enrolled: 1248,
-  csu_actifs: 1098,
-  csu_a_renouveler: 89,
+  risques_rouge: mockRisquesIA.filter((r) => r.niveau === "rouge").length,
+  risques_orange: mockRisquesIA.filter((r) => r.niveau === "orange").length,
+  risques_vert: mockRisquesIA.filter((r) => r.niveau === "vert").length,
+  references_delai_moyen: Math.round(
+    mockReferencesSonu.reduce((sum, r) => sum + (r.delai_minutes || 0), 0) /
+      mockReferencesSonu.filter((r) => r.delai_minutes).length
+  ),
+  csu_enrolled: mockPatients.length,
+  csu_actifs: mockPatients.filter((p) => p.statut_csu === "actif").length,
+  csu_a_renouveler: mockPatients.filter((p) => p.statut_csu === "a_renouveler").length,
   pev_complet_pourcentage: 87.3,
   letalite_taux: 2.4,
   qualite_score: 78,
 };
 
-// Vaccins
+// Vaccins enrichis
 export const mockVaccins: VaccinData[] = [
-  {
-    id: "vac1",
-    patient_id: "p1",
-    vaccin: "BCG",
-    date_prevue: "2025-12-22",
-    statut: "prevu",
-    structure: "Poste de Santé Dakar Nord",
-  },
-  {
-    id: "vac2",
-    patient_id: "p2",
-    vaccin: "BCG",
-    date_prevue: "2026-01-27",
-    statut: "prevu",
-    structure: "Centre de Santé Pikine",
-  },
-  {
-    id: "vac3",
-    patient_id: "p3",
-    vaccin: "BCG",
-    date_prevue: "2025-11-17",
-    statut: "prevu",
-    structure: "Hôpital Rufisque",
-  },
-  {
-    id: "vac4",
-    patient_id: "p4",
-    vaccin: "BCG",
-    date_prevue: "2026-02-07",
-    statut: "prevu",
-    structure: "Poste de Santé Dakar Nord",
-  },
+  ...mockPatients
+    .filter((p) => p.semaines > 30)
+    .flatMap((patient) => {
+      const vaccines: ("BCG" | "Polio0" | "Penta1" | "Penta2" | "Penta3")[] = ["BCG", "Polio0", "Penta1", "Penta2", "Penta3"];
+      const daysAfterBirth = [0, 0, 42, 70, 98];
+      
+      return vaccines.map((vaccin, index) => {
+        const birthDate = new Date(patient.terme_prevu);
+        const vaccinDate = new Date(birthDate);
+        vaccinDate.setDate(vaccinDate.getDate() + daysAfterBirth[index]);
+        
+        const now = new Date();
+        let statut: "realise" | "retard" | "prevu";
+        let date_realisee: string | undefined;
+        
+        if (vaccinDate < now) {
+          const daysPastDue = Math.floor((now.getTime() - vaccinDate.getTime()) / (1000 * 60 * 60 * 24));
+          if (daysPastDue > 14) {
+            statut = "retard";
+          } else if (Math.random() > 0.3) {
+            statut = "realise";
+            date_realisee = new Date(vaccinDate.getTime() + Math.random() * daysPastDue * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          } else {
+            statut = "retard";
+          }
+        } else {
+          statut = "prevu";
+        }
+        
+        return {
+          id: `vac_${patient.id}_${vaccin}`,
+          patient_id: patient.id,
+          vaccin,
+          date_prevue: vaccinDate.toISOString().split('T')[0],
+          date_realisee,
+          statut,
+          structure: patient.structure,
+        };
+      });
+    }),
 ];
 
 // Structures sanitaires
@@ -732,52 +713,49 @@ export const mockQualiteData = {
   ],
 };
 
-// RDV en retard
+// RDV en retard enrichis
 export const mockRdvRetards = [
-  {
-    id: "rdv1",
-    patient_nom: "Fatou Diop",
-    age: 17,
-    semaines: 32,
-    retard_jours: 5,
-    agent: "Aminata Sall",
-    structure: "Poste de Santé Dakar Nord",
-    telephone: "+221771234567",
-  },
-  {
-    id: "rdv2",
-    patient_nom: "Khadija Mbaye",
-    age: 19,
-    semaines: 28,
-    retard_jours: 4,
-    agent: "Aminata Sall",
-    structure: "Centre de Santé Thiaroye",
-    telephone: "+221775678901",
-  },
-  {
-    id: "rdv3",
-    patient_nom: "Seynabou Thiam",
-    age: 18,
-    semaines: 35,
-    retard_jours: 8,
-    agent: "Fatou Sarr",
-    structure: "Hôpital Rufisque",
-    telephone: "+221778901234",
-  },
+  ...mockPatients
+    .filter((p) => {
+      const visites = mockVisites.filter((v) => v.patient_id === p.id && v.statut === "realise");
+      const lastVisite = visites[visites.length - 1];
+      if (!lastVisite) return false;
+      
+      const daysSinceLastVisit = Math.floor((new Date().getTime() - new Date(lastVisite.date).getTime()) / (1000 * 60 * 60 * 24));
+      return daysSinceLastVisit > 3 && p.semaines < 38;
+    })
+    .slice(0, 25)
+    .map((patient) => {
+      const visites = mockVisites.filter((v) => v.patient_id === patient.id && v.statut === "realise");
+      const lastVisite = visites[visites.length - 1];
+      const daysSinceLastVisit = Math.floor((new Date().getTime() - new Date(lastVisite.date).getTime()) / (1000 * 60 * 60 * 24));
+      
+      return {
+        id: `rdv_${patient.id}`,
+        patient_nom: `${patient.prenom} ${patient.nom}`,
+        age: patient.age,
+        semaines: patient.semaines,
+        retard_jours: daysSinceLastVisit,
+        agent: patient.agent,
+        structure: patient.structure,
+        telephone: patient.telephone,
+      };
+    }),
 ];
 
-// Stats mensuelles CPN (pour graphiques)
+// Stats mensuelles CPN enrichies (pour graphiques)
 export const mockCPNMonthly = [
-  { mois: "Jan 2025", cpn1: 98, cpn2: 87, cpn3: 76, cpn4: 65 },
-  { mois: "Fév 2025", cpn1: 105, cpn2: 92, cpn3: 81, cpn4: 70 },
-  { mois: "Mar 2025", cpn1: 112, cpn2: 98, cpn3: 85, cpn4: 73 },
-  { mois: "Avr 2025", cpn1: 118, cpn2: 105, cpn3: 92, cpn4: 78 },
-  { mois: "Mai 2025", cpn1: 125, cpn2: 110, cpn3: 98, cpn4: 82 },
-  { mois: "Jun 2025", cpn1: 132, cpn2: 118, cpn3: 105, cpn4: 88 },
-  { mois: "Jul 2025", cpn1: 128, cpn2: 122, cpn3: 110, cpn4: 92 },
-  { mois: "Aoû 2025", cpn1: 135, cpn2: 128, cpn3: 115, cpn4: 95 },
-  { mois: "Sep 2025", cpn1: 142, cpn2: 132, cpn3: 120, cpn4: 98 },
-  { mois: "Oct 2025", cpn1: 148, cpn2: 138, cpn3: 125, cpn4: 102 },
+  { mois: "Jan 2025", cpn1: 128, cpn2: 115, cpn3: 98, cpn4: 82 },
+  { mois: "Fév 2025", cpn1: 142, cpn2: 125, cpn3: 108, cpn4: 91 },
+  { mois: "Mar 2025", cpn1: 155, cpn2: 138, cpn3: 118, cpn4: 98 },
+  { mois: "Avr 2025", cpn1: 168, cpn2: 152, cpn3: 132, cpn4: 112 },
+  { mois: "Mai 2025", cpn1: 178, cpn2: 162, cpn3: 145, cpn4: 122 },
+  { mois: "Jun 2025", cpn1: 185, cpn2: 172, cpn3: 155, cpn4: 131 },
+  { mois: "Jul 2025", cpn1: 192, cpn2: 181, cpn3: 165, cpn4: 138 },
+  { mois: "Aoû 2025", cpn1: 205, cpn2: 195, cpn3: 175, cpn4: 145 },
+  { mois: "Sep 2025", cpn1: 218, cpn2: 205, cpn3: 188, cpn4: 155 },
+  { mois: "Oct 2025", cpn1: 232, cpn2: 218, cpn3: 198, cpn4: 165 },
+  { mois: "Nov 2025", cpn1: 245, cpn2: 230, cpn3: 208, cpn4: 172 },
 ];
 
 // Couverture géographique (heatmap)
