@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { LogOut } from "lucide-react";
+import { Onboarding } from "@/components/Onboarding";
 
 export default function DashboardLayout() {
   const navigate = useNavigate();
@@ -61,6 +62,7 @@ export default function DashboardLayout() {
           </main>
         </div>
       </div>
+      <Onboarding />
     </SidebarProvider>
   );
 }
