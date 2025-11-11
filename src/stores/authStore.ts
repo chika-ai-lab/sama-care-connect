@@ -1,9 +1,9 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { User } from '@/data/mockData';
-import { validateUserScope } from '@/lib/dataFilters';
-import { addAuditLog } from '@/lib/auditLog';
-import { Action, Resource } from '@/lib/permissions';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { User } from "@/data/mockData";
+import { validateUserScope } from "@/lib/dataFilters";
+import { addAuditLog } from "@/lib/auditLog";
+import { Action, Resource } from "@/lib/permissions";
 
 interface AuthState {
   user: User | null;
@@ -44,13 +44,15 @@ export const useAuthStore = create<AuthState>()(
         addAuditLog(
           user,
           "read" as Action,
-          "analytics" as any,
+          Resource.ANALYTICS,
           undefined,
           { action: "login", timestamp: loginTime },
           true
         );
 
-        console.log(`✅ Connexion réussie: ${user.prenom} ${user.nom} (${user.role})`);
+        console.log(
+          `✅ Connexion réussie: ${user.prenom} ${user.nom} (${user.role})`
+        );
         return true;
       },
 
@@ -61,7 +63,7 @@ export const useAuthStore = create<AuthState>()(
           addAuditLog(
             state.user,
             "read" as Action,
-            "analytics" as any,
+            Resource.ANALYTICS,
             undefined,
             { action: "logout", timestamp: new Date().toISOString() },
             true
@@ -96,13 +98,14 @@ export const useAuthStore = create<AuthState>()(
 
         const loginDate = new Date(state.lastLoginTime);
         const now = new Date();
-        const hoursSinceLogin = (now.getTime() - loginDate.getTime()) / (1000 * 60 * 60);
+        const hoursSinceLogin =
+          (now.getTime() - loginDate.getTime()) / (1000 * 60 * 60);
 
         return hoursSinceLogin > 24;
       },
     }),
     {
-      name: 'auth-storage', // localStorage key
+      name: "auth-storage", // localStorage key
       partialize: (state) => ({
         user: state.user,
         lastLoginTime: state.lastLoginTime,
