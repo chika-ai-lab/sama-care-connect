@@ -103,7 +103,7 @@ export default function AgentEnrollment() {
     // Envoyer SMS
     try {
       sendEnrollmentSMS(newAgent);
-      toast.success(`Agent enrôlé avec succès. SMS envoyé à ${formData.telephone}`);
+      toast.success(`Agent enrôlé avec succès. SMS envoyé �� ${formData.telephone}`);
 
       // Log audit
       addAuditLog(
@@ -393,10 +393,10 @@ export default function AgentEnrollment() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleResendSMS(agent)}
-                            title="Renvoyer le SMS"
+                            onClick={() => handleViewAgentDetail(agent)}
+                            title="Voir détails"
                           >
-                            <MessageSquare className="h-3 w-3" />
+                            <Eye className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="outline"
