@@ -134,6 +134,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, { permissions: Permission[]; sco
       "dhis2:export",
       "analytics:read",
       "analytics:export",
+      "agent:create",
+      "agent:read",
+      "agent:update",
+      "agent:delete",
     ],
     scope: PermissionScope.DISTRICT, // Voit tout son district
   },
