@@ -121,8 +121,8 @@ export default function AgentEnrollment() {
         true
       );
 
-      // Ajouter à la liste
-      mockHealthAgents.push(newAgent);
+      // Ajouter à la liste via Zustand store
+      addAgent(newAgent);
 
       // Réinitialiser le formulaire
       setFormData({
