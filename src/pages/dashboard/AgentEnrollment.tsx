@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { mockHealthAgents, HealthAgent } from "@/data/mockData";
+import { HealthAgent } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { Resource } from "@/lib/permissions";
 import { CreateGuard } from "@/components/PermissionGuard";
 import { toast } from "sonner";
 import { sendEnrollmentSMS, getSMSHistoryForAgent, SMSRecord } from "@/lib/smsSimulation";
+import { useAgents } from "@/hooks/useAgents";
 import {
   Table,
   TableBody,
