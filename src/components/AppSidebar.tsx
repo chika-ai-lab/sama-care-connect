@@ -106,6 +106,12 @@ const menuItems: MenuItem[] = [
     icon: Database,
     allowedRoles: ["responsable_district"],
   },
+  {
+    title: "Gestion Agents",
+    url: "/dashboard/agents",
+    icon: Users,
+    allowedRoles: ["responsable_structure", "responsable_district"],
+  },
   // Menu pour Partenaires - Données anonymisées uniquement
   {
     title: "Analytics Global",
