@@ -1,10 +1,5 @@
-# TODO: Complete Mock Data
+# TODO: Add React QR Code to PatientCard
 
-- [x] Add 'district' property to patient p1 (Poste de Santé Dakar Nord -> Dakar Nord)
-- [x] Add 'district' property to patient p2 (Centre de Santé Pikine -> Pikine)
-- [x] Add 'district' property to patient p3 (Hôpital Rufisque -> Rufisque)
-- [x] Add 'district' property to patient p4 (Poste de Santé Guédiawaye -> Guédiawaye)
-- [x] Add 'district' property to patient p5 (Centre de Santé Thiaroye -> Dakar Sud)
-- [x] Add 'district' property to patient p6 (Poste de Santé Dakar Nord -> Dakar Nord)
-- [x] Add 'district' property to patient p7 (Centre de Santé Pikine -> Pikine)
-- [x] Add 'district' property to patient p8 (Hôpital Rufisque -> Rufisque)
+- [x] Install react-qr-code library using pnpm
+- [x] Modify PatientCard.tsx to import and display QR code for patient details
+- [ ] Test the QR code functionality in the application

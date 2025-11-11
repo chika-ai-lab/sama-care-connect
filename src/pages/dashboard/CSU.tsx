@@ -2,9 +2,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { mockPatients } from "@/data/mockData";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { QrCode, Download, Search, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import {
+  QrCode,
+  Download,
+  Search,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,18 +43,34 @@ export default function CSU() {
   let userPatients = filterPatientsByUser(mockPatients, user);
 
   // Filtrage par structure pour responsable district
-  if (user?.role === 'responsable_district' && selectedStructure !== "all") {
-    userPatients = userPatients.filter(p => p.structure === selectedStructure);
+  if (user?.role === "responsable_district" && selectedStructure !== "all") {
+    userPatients = userPatients.filter(
+      (p) => p.structure === selectedStructure
+    );
   }
 
   const getStatusBadge = (statut: string) => {
     switch (statut) {
-      case 'actif':
-        return <Badge className="bg-[hsl(var(--status-vert))] text-white"><CheckCircle className="h-3 w-3 mr-1" />Actif</Badge>;
-      case 'en_attente':
-        return <Badge className="bg-[hsl(var(--status-orange))] text-white"><Clock className="h-3 w-3 mr-1" />En attente</Badge>;
-      case 'a_renouveler':
-        return <Badge className="bg-[hsl(var(--status-rouge))] text-white"><AlertCircle className="h-3 w-3 mr-1" />À renouveler</Badge>;
+      case "actif":
+        return (
+          <Badge className="bg-[hsl(var(--status-vert))] text-nowrap text-white">
+            <CheckCircle className="h-3 w-3 mr-1" />
+            Actif
+          </Badge>
+        );
+      case "en_attente":
+        return (
+          <Badge className="bg-[hsl(var(--status-orange))] text-nowrap text-white">
+            <Clock className="h-3 w-3 mr-1" />
+            En attente
+          </Badge>
+        );
+      case "a_renouveler":
+        return (
+          <Badge className="bg-[hsl(var(--status-rouge))] text-nowrap text-white">
+            <AlertCircle className="h-3 w-3 mr-1" />À renouveler
+          </Badge>
+        );
       default:
         return null;
     }
@@ -55,9 +85,10 @@ export default function CSU() {
   };
 
   // Filtrage par status
-  let filteredByStatus = statusFilter === "tous"
-    ? userPatients
-    : userPatients.filter(p => p.statut_csu === statusFilter);
+  const filteredByStatus =
+    statusFilter === "tous"
+      ? userPatients
+      : userPatients.filter((p) => p.statut_csu === statusFilter);
 
   // Filtrage par recherche
   const filteredPatients = searchTerm
@@ -70,9 +101,11 @@ export default function CSU() {
     : filteredByStatus;
 
   const stats = {
-    actif: userPatients.filter(p => p.statut_csu === 'actif').length,
-    en_attente: userPatients.filter(p => p.statut_csu === 'en_attente').length,
-    a_renouveler: userPatients.filter(p => p.statut_csu === 'a_renouveler').length,
+    actif: userPatients.filter((p) => p.statut_csu === "actif").length,
+    en_attente: userPatients.filter((p) => p.statut_csu === "en_attente")
+      .length,
+    a_renouveler: userPatients.filter((p) => p.statut_csu === "a_renouveler")
+      .length,
   };
 
   return (
@@ -98,7 +131,9 @@ export default function CSU() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">CSU Actifs</p>
-                <p className="text-3xl font-bold text-[hsl(var(--status-vert))]">{stats.actif}</p>
+                <p className="text-3xl font-bold text-[hsl(var(--status-vert))]">
+                  {stats.actif}
+                </p>
               </div>
               <CheckCircle className="h-12 w-12 text-[hsl(var(--status-vert))] opacity-20" />
             </div>
@@ -110,7 +145,9 @@ export default function CSU() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">En attente</p>
-                <p className="text-3xl font-bold text-[hsl(var(--status-orange))]">{stats.en_attente}</p>
+                <p className="text-3xl font-bold text-[hsl(var(--status-orange))]">
+                  {stats.en_attente}
+                </p>
               </div>
               <Clock className="h-12 w-12 text-[hsl(var(--status-orange))] opacity-20" />
             </div>
@@ -122,7 +159,9 @@ export default function CSU() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">À renouveler</p>
-                <p className="text-3xl font-bold text-[hsl(var(--status-rouge))]">{stats.a_renouveler}</p>
+                <p className="text-3xl font-bold text-[hsl(var(--status-rouge))]">
+                  {stats.a_renouveler}
+                </p>
               </div>
               <AlertCircle className="h-12 w-12 text-[hsl(var(--status-rouge))] opacity-20" />
             </div>
@@ -185,11 +224,18 @@ export default function CSU() {
                     {patient.structure}
                   </TableCell>
                   <TableCell className="text-sm">{patient.agent}</TableCell>
-                  <TableCell className="text-xs">{patient.date_enrolement}</TableCell>
-                  <TableCell className="text-xs">{patient.date_renouvellement}</TableCell>
+                  <TableCell className="text-xs">
+                    {patient.date_enrolement}
+                  </TableCell>
+                  <TableCell className="text-xs">
+                    {patient.date_renouvellement}
+                  </TableCell>
                   <TableCell>
                     {patient.qr_code ? (
-                      <Badge variant="outline" className="cursor-pointer hover:bg-muted">
+                      <Badge
+                        variant="outline"
+                        className="cursor-pointer hover:bg-muted"
+                      >
                         <QrCode className="h-3 w-3 mr-1" />
                         {patient.qr_code}
                       </Badge>
@@ -202,7 +248,9 @@ export default function CSU() {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handleGenerateQR(`${patient.prenom} ${patient.nom}`)}
+                      onClick={() =>
+                        handleGenerateQR(`${patient.prenom} ${patient.nom}`)
+                      }
                     >
                       <QrCode className="h-3 w-3 mr-1" />
                       QR

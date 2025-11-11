@@ -111,20 +111,62 @@ export interface VaccinData {
 }
 
 // Générateur de noms sénégalais
-const noms = ["Diop", "Ndiaye", "Sow", "Fall", "Mbaye", "Gueye", "Cissé", "Thiam", "Sy", "Ba", "Diallo", "Sarr", "Faye", "Diouf", "Kane", "Niang", "Seck", "Ndao", "Touré", "Dème"];
-const prenoms = ["Fatou", "Aissatou", "Mariama", "Awa", "Khadija", "Mame", "Ami", "Seynabou", "Binta", "Ndèye", "Khady", "Aminata", "Rokhaya", "Coumba", "Astou", "Dieynaba", "Maimouna", "Yacine", "Fatoumata", "Adama"];
+const noms = [
+  "Diop",
+  "Ndiaye",
+  "Sow",
+  "Fall",
+  "Mbaye",
+  "Gueye",
+  "Cissé",
+  "Thiam",
+  "Sy",
+  "Ba",
+  "Diallo",
+  "Sarr",
+  "Faye",
+  "Diouf",
+  "Kane",
+  "Niang",
+  "Seck",
+  "Ndao",
+  "Touré",
+  "Dème",
+];
+const prenoms = [
+  "Fatou",
+  "Aissatou",
+  "Mariama",
+  "Awa",
+  "Khadija",
+  "Mame",
+  "Ami",
+  "Seynabou",
+  "Binta",
+  "Ndèye",
+  "Khady",
+  "Aminata",
+  "Rokhaya",
+  "Coumba",
+  "Astou",
+  "Dieynaba",
+  "Maimouna",
+  "Yacine",
+  "Fatoumata",
+  "Adama",
+];
 
 // Helper pour générer des dates
 const generateDate = (daysAgo: number) => {
   const date = new Date();
   date.setDate(date.getDate() - daysAgo);
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 };
 
 const generateFutureDate = (daysAhead: number) => {
   const date = new Date();
   date.setDate(date.getDate() + daysAhead);
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 };
 
 // Patients enrichis (50 patients)
@@ -287,27 +329,56 @@ export const mockPatients: Patient[] = [
     const semaines = 8 + Math.floor(Math.random() * 32); // 8-39 semaines
     const daysPregnant = semaines * 7;
     const daysUntilTerm = (40 - semaines) * 7;
-    
+
     const structures = [
       { name: "Centre de Santé Pikine", district: "Pikine", region: "Dakar" },
-      { name: "Poste de Santé Dakar Nord", district: "Dakar Nord", region: "Dakar" },
-      { name: "Centre de Santé Thiaroye", district: "Dakar Sud", region: "Dakar" },
+      {
+        name: "Poste de Santé Dakar Nord",
+        district: "Dakar Nord",
+        region: "Dakar",
+      },
+      {
+        name: "Centre de Santé Thiaroye",
+        district: "Dakar Sud",
+        region: "Dakar",
+      },
       { name: "Hôpital Rufisque", district: "Rufisque", region: "Dakar" },
-      { name: "Poste de Santé Guédiawaye", district: "Guédiawaye", region: "Dakar" },
-      { name: "Hôpital Principal Dakar", district: "Dakar Nord", region: "Dakar" },
+      {
+        name: "Poste de Santé Guédiawaye",
+        district: "Guédiawaye",
+        region: "Dakar",
+      },
+      {
+        name: "Hôpital Principal Dakar",
+        district: "Dakar Nord",
+        region: "Dakar",
+      },
       { name: "Hôpital Le Dantec", district: "Dakar Nord", region: "Dakar" },
       { name: "Hôpital Abass Ndao", district: "Dakar Sud", region: "Dakar" },
     ];
     const structure = structures[Math.floor(Math.random() * structures.length)];
-    const agents = ["Aminata Sall", "Khady Faye", "Bineta Diallo", "Fatou Sarr", "Awa Ndiaye", "Mariama Cissé"];
-    const statuts: ("actif" | "en_attente" | "a_renouveler")[] = ["actif", "actif", "actif", "en_attente", "a_renouveler"];
-    
+    const agents = [
+      "Aminata Sall",
+      "Khady Faye",
+      "Bineta Diallo",
+      "Fatou Sarr",
+      "Awa Ndiaye",
+      "Mariama Cissé",
+    ];
+    const statuts: ("actif" | "en_attente" | "a_renouveler")[] = [
+      "actif",
+      "actif",
+      "actif",
+      "en_attente",
+      "a_renouveler",
+    ];
+
     return {
       id,
       nom: noms[nomIndex],
       prenom: prenoms[prenomIndex],
       age,
-      telephone: `+22177${String(8900000 + i + 200).padStart(7, '0')}`,
+      telephone: `+22177${String(8900000 + i + 200).padStart(7, "0")}`,
       ddr: generateDate(daysPregnant),
       terme_prevu: generateFutureDate(daysUntilTerm),
       semaines,
@@ -317,11 +388,14 @@ export const mockPatients: Patient[] = [
       agent: agents[Math.floor(Math.random() * agents.length)],
       statut_csu: statuts[Math.floor(Math.random() * statuts.length)],
       date_enrolement: generateDate(daysPregnant - 14),
-      date_renouvellement: generateFutureDate(daysUntilTerm + 30 + Math.floor(Math.random() * 150)),
-      qr_code: `QR_CSU_${String(i + 9).padStart(3, '0')}`,
+      date_renouvellement: generateFutureDate(
+        daysUntilTerm + 30 + Math.floor(Math.random() * 150)
+      ),
+      qr_code: `QR_CSU_${String(i + 9).padStart(3, "0")}`,
       imc: 18 + Math.random() * 12,
       pb_muac: 19 + Math.random() * 8,
-      hemoglobine: age < 20 ? 9.5 + Math.random() * 3 : 10.5 + Math.random() * 3,
+      hemoglobine:
+        age < 20 ? 9.5 + Math.random() * 3 : 10.5 + Math.random() * 3,
     } as Patient;
   }),
 ];
@@ -330,19 +404,28 @@ export const mockPatients: Patient[] = [
 export const mockVisites: Visite[] = [
   ...mockPatients.flatMap((patient) => {
     const visites: Visite[] = [];
-    const stages: ("CPN1" | "CPN2" | "CPN3" | "CPN4")[] = ["CPN1", "CPN2", "CPN3", "CPN4"];
+    const stages: ("CPN1" | "CPN2" | "CPN3" | "CPN4")[] = [
+      "CPN1",
+      "CPN2",
+      "CPN3",
+      "CPN4",
+    ];
     const weeksForStage = [12, 20, 28, 36];
-    
+
     stages.forEach((type, index) => {
       if (patient.semaines >= weeksForStage[index]) {
-        const daysAgo = (patient.semaines - weeksForStage[index]) * 7 + Math.floor(Math.random() * 10);
+        const daysAgo =
+          (patient.semaines - weeksForStage[index]) * 7 +
+          Math.floor(Math.random() * 10);
         visites.push({
           id: `v${patient.id}_${type}`,
           patient_id: patient.id,
           type,
           date: generateDate(daysAgo),
           poids: 50 + Math.random() * 25 + index * 3,
-          tension: `${110 + Math.floor(Math.random() * 20)}/${70 + Math.floor(Math.random() * 15)}`,
+          tension: `${110 + Math.floor(Math.random() * 20)}/${
+            70 + Math.floor(Math.random() * 15)
+          }`,
           pb: 20 + Math.random() * 7,
           imc: patient.imc || 20 + Math.random() * 8,
           agent: patient.agent,
@@ -357,7 +440,9 @@ export const mockVisites: Visite[] = [
           id: `v${patient.id}_${type}_plan`,
           patient_id: patient.id,
           type,
-          date: generateFutureDate((weeksForStage[index] - patient.semaines) * 7),
+          date: generateFutureDate(
+            (weeksForStage[index] - patient.semaines) * 7
+          ),
           poids: 0,
           tension: "",
           pb: 0,
@@ -369,7 +454,7 @@ export const mockVisites: Visite[] = [
         });
       }
     });
-    
+
     return visites;
   }),
 ];
@@ -385,22 +470,26 @@ export const mockVisitesCPoN: VisiteCPoN[] = [
       cpon1Date.setDate(cpon1Date.getDate() + 6);
       const cpon2Date = new Date(birthDate);
       cpon2Date.setDate(cpon2Date.getDate() + 42);
-      
+
       return [
         {
           id: `cpon1_${patient.id}`,
           patient_id: patient.id,
           type: "CPoN1" as const,
-          date_prevue: cpon1Date.toISOString().split('T')[0],
-          statut: Math.random() > 0.5 ? ("realise" as const) : ("planifie" as const),
+          date_prevue: cpon1Date.toISOString().split("T")[0],
+          statut:
+            Math.random() > 0.5 ? ("realise" as const) : ("planifie" as const),
           jours_postpartum: 6,
         },
         {
           id: `cpon2_${patient.id}`,
           patient_id: patient.id,
           type: "CPoN2" as const,
-          date_prevue: cpon2Date.toISOString().split('T')[0],
-          statut: Math.random() > 0.7 ? ("realise" as const) : ("rappel_envoye" as const),
+          date_prevue: cpon2Date.toISOString().split("T")[0],
+          statut:
+            Math.random() > 0.7
+              ? ("realise" as const)
+              : ("rappel_envoye" as const),
           jours_postpartum: 42,
         },
       ];
@@ -412,8 +501,8 @@ export const mockRisquesIA: RisqueIA[] = [
   ...mockPatients.map((patient, index) => {
     let niveau: "rouge" | "orange" | "vert";
     let score: number;
-    let facteurs: string[] = [];
-    
+    const facteurs: string[] = [];
+
     // Critères de risque
     if (patient.age < 18) {
       facteurs.push("Âge < 18");
@@ -424,22 +513,22 @@ export const mockRisquesIA: RisqueIA[] = [
     } else {
       score = 10 + Math.random() * 30;
     }
-    
+
     if (patient.hemoglobine && patient.hemoglobine < 11) {
       facteurs.push(`Anémie (Hb ${patient.hemoglobine.toFixed(1)})`);
       score += 15;
     }
-    
+
     if (patient.pb_muac && patient.pb_muac < 21) {
       facteurs.push(`PB < 21cm (${patient.pb_muac.toFixed(1)})`);
       score += 20;
     }
-    
+
     if (patient.semaines > 36 && patient.age < 19) {
       facteurs.push("Primipare proche du terme");
       score += 10;
     }
-    
+
     // Déterminer le niveau
     if (score >= 70) {
       niveau = "rouge";
@@ -448,7 +537,7 @@ export const mockRisquesIA: RisqueIA[] = [
     } else {
       niveau = "vert";
     }
-    
+
     return {
       id: `r${patient.id}`,
       patient_id: patient.id,
@@ -458,7 +547,12 @@ export const mockRisquesIA: RisqueIA[] = [
       niveau,
       facteurs,
       regle_ia: `Règle #${Math.floor(Math.random() * 25) + 1}`,
-      prediction: niveau === "rouge" ? "Risque élevé - surveillance renforcée" : niveau === "orange" ? "Surveillance renforcée recommandée" : undefined,
+      prediction:
+        niveau === "rouge"
+          ? "Risque élevé - surveillance renforcée"
+          : niveau === "orange"
+          ? "Surveillance renforcée recommandée"
+          : undefined,
       date: generateDate(Math.floor(Math.random() * 7)),
       semaines: patient.semaines,
     };
@@ -474,18 +568,23 @@ export const mockReferencesSonu: ReferenceSonu[] = [
       const hoursAgo = Math.floor(Math.random() * 72);
       const alerteDate = new Date();
       alerteDate.setHours(alerteDate.getHours() - hoursAgo);
-      
+
       const transportDelay = 20 + Math.floor(Math.random() * 90);
       const transportDate = new Date(alerteDate);
       transportDate.setMinutes(transportDate.getMinutes() + transportDelay);
-      
+
       const admissionDelay = 15 + Math.floor(Math.random() * 60);
       const admissionDate = new Date(transportDate);
       admissionDate.setMinutes(admissionDate.getMinutes() + admissionDelay);
-      
-      const statuts: ("alerte" | "en_route" | "admis" | "resolu")[] = ["alerte", "en_route", "admis", "resolu"];
+
+      const statuts: ("alerte" | "en_route" | "admis" | "resolu")[] = [
+        "alerte",
+        "en_route",
+        "admis",
+        "resolu",
+      ];
       const statut = statuts[Math.min(Math.floor(hoursAgo / 12), 3)];
-      
+
       const alertes = [
         "HTA sévère + céphalées",
         "Rupture prématurée membranes",
@@ -495,26 +594,40 @@ export const mockReferencesSonu: ReferenceSonu[] = [
         "Souffrance fœtale",
         "Présentation anormale",
       ];
-      
+
       const sonuStructures = [
         "Hôpital Principal Dakar",
         "Hôpital Le Dantec",
         "Hôpital Abass Ndao",
       ];
-      
+
       return {
         id: `s${patient.id}`,
         patient_id: patient.id,
         patient_nom: `${patient.prenom} ${patient.nom}`,
         alerte_heure: alerteDate.toISOString(),
-        transport_heure: statut !== "alerte" ? transportDate.toISOString() : undefined,
-        admission_heure: (statut === "admis" || statut === "resolu") ? admissionDate.toISOString() : undefined,
-        contre_ref_heure: statut === "resolu" ? new Date(admissionDate.getTime() + 1000 * 60 * (120 + Math.random() * 180)).toISOString() : undefined,
+        transport_heure:
+          statut !== "alerte" ? transportDate.toISOString() : undefined,
+        admission_heure:
+          statut === "admis" || statut === "resolu"
+            ? admissionDate.toISOString()
+            : undefined,
+        contre_ref_heure:
+          statut === "resolu"
+            ? new Date(
+                admissionDate.getTime() +
+                  1000 * 60 * (120 + Math.random() * 180)
+              ).toISOString()
+            : undefined,
         statut,
         type_alerte: alertes[Math.floor(Math.random() * alertes.length)],
         structure_origine: patient.structure,
-        structure_sonu: sonuStructures[Math.floor(Math.random() * sonuStructures.length)],
-        delai_minutes: (statut === "admis" || statut === "resolu") ? transportDelay + admissionDelay : undefined,
+        structure_sonu:
+          sonuStructures[Math.floor(Math.random() * sonuStructures.length)],
+        delai_minutes:
+          statut === "admis" || statut === "resolu"
+            ? transportDelay + admissionDelay
+            : undefined,
       };
     }),
 ];
@@ -522,9 +635,13 @@ export const mockReferencesSonu: ReferenceSonu[] = [
 // KPI Data enrichies
 export const mockKPIData: KPIData = {
   patientes_totales: mockPatients.length,
-  cpn1_realisees: mockVisites.filter((v) => v.type === "CPN1" && v.statut === "realise").length,
+  cpn1_realisees: mockVisites.filter(
+    (v) => v.type === "CPN1" && v.statut === "realise"
+  ).length,
   cpn1_cible: mockPatients.length,
-  cpn4_realisees: mockVisites.filter((v) => v.type === "CPN4" && v.statut === "realise").length,
+  cpn4_realisees: mockVisites.filter(
+    (v) => v.type === "CPN4" && v.statut === "realise"
+  ).length,
   cpn4_cible: Math.floor(mockPatients.length * 0.76),
   cpon_pourcentage: 68.5,
   risques_rouge: mockRisquesIA.filter((r) => r.niveau === "rouge").length,
@@ -536,7 +653,8 @@ export const mockKPIData: KPIData = {
   ),
   csu_enrolled: mockPatients.length,
   csu_actifs: mockPatients.filter((p) => p.statut_csu === "actif").length,
-  csu_a_renouveler: mockPatients.filter((p) => p.statut_csu === "a_renouveler").length,
+  csu_a_renouveler: mockPatients.filter((p) => p.statut_csu === "a_renouveler")
+    .length,
   pev_complet_pourcentage: 87.3,
   letalite_taux: 2.4,
   qualite_score: 78,
@@ -547,37 +665,50 @@ export const mockVaccins: VaccinData[] = [
   ...mockPatients
     .filter((p) => p.semaines > 30)
     .flatMap((patient) => {
-      const vaccines: ("BCG" | "Polio0" | "Penta1" | "Penta2" | "Penta3")[] = ["BCG", "Polio0", "Penta1", "Penta2", "Penta3"];
+      const vaccines: ("BCG" | "Polio0" | "Penta1" | "Penta2" | "Penta3")[] = [
+        "BCG",
+        "Polio0",
+        "Penta1",
+        "Penta2",
+        "Penta3",
+      ];
       const daysAfterBirth = [0, 0, 42, 70, 98];
-      
+
       return vaccines.map((vaccin, index) => {
         const birthDate = new Date(patient.terme_prevu);
         const vaccinDate = new Date(birthDate);
         vaccinDate.setDate(vaccinDate.getDate() + daysAfterBirth[index]);
-        
+
         const now = new Date();
         let statut: "realise" | "retard" | "prevu";
         let date_realisee: string | undefined;
-        
+
         if (vaccinDate < now) {
-          const daysPastDue = Math.floor((now.getTime() - vaccinDate.getTime()) / (1000 * 60 * 60 * 24));
+          const daysPastDue = Math.floor(
+            (now.getTime() - vaccinDate.getTime()) / (1000 * 60 * 60 * 24)
+          );
           if (daysPastDue > 14) {
             statut = "retard";
           } else if (Math.random() > 0.3) {
             statut = "realise";
-            date_realisee = new Date(vaccinDate.getTime() + Math.random() * daysPastDue * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            date_realisee = new Date(
+              vaccinDate.getTime() +
+                Math.random() * daysPastDue * 24 * 60 * 60 * 1000
+            )
+              .toISOString()
+              .split("T")[0];
           } else {
             statut = "retard";
           }
         } else {
           statut = "prevu";
         }
-        
+
         return {
           id: `vac_${patient.id}_${vaccin}`,
           patient_id: patient.id,
           vaccin,
-          date_prevue: vaccinDate.toISOString().split('T')[0],
+          date_prevue: vaccinDate.toISOString().split("T")[0],
           date_realisee,
           statut,
           structure: patient.structure,
@@ -717,19 +848,29 @@ export const mockQualiteData = {
 export const mockRdvRetards = [
   ...mockPatients
     .filter((p) => {
-      const visites = mockVisites.filter((v) => v.patient_id === p.id && v.statut === "realise");
+      const visites = mockVisites.filter(
+        (v) => v.patient_id === p.id && v.statut === "realise"
+      );
       const lastVisite = visites[visites.length - 1];
       if (!lastVisite) return false;
-      
-      const daysSinceLastVisit = Math.floor((new Date().getTime() - new Date(lastVisite.date).getTime()) / (1000 * 60 * 60 * 24));
+
+      const daysSinceLastVisit = Math.floor(
+        (new Date().getTime() - new Date(lastVisite.date).getTime()) /
+          (1000 * 60 * 60 * 24)
+      );
       return daysSinceLastVisit > 3 && p.semaines < 38;
     })
     .slice(0, 25)
     .map((patient) => {
-      const visites = mockVisites.filter((v) => v.patient_id === patient.id && v.statut === "realise");
+      const visites = mockVisites.filter(
+        (v) => v.patient_id === patient.id && v.statut === "realise"
+      );
       const lastVisite = visites[visites.length - 1];
-      const daysSinceLastVisit = Math.floor((new Date().getTime() - new Date(lastVisite.date).getTime()) / (1000 * 60 * 60 * 24));
-      
+      const daysSinceLastVisit = Math.floor(
+        (new Date().getTime() - new Date(lastVisite.date).getTime()) /
+          (1000 * 60 * 60 * 24)
+      );
+
       return {
         id: `rdv_${patient.id}`,
         patient_nom: `${patient.prenom} ${patient.nom}`,
