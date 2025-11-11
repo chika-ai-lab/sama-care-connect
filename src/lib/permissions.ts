@@ -327,4 +327,10 @@ export const Permissions = {
   // Structure
   STRUCTURE_READ: "structure:read" as Permission,
   STRUCTURE_UPDATE: "structure:update" as Permission,
+
+  // Agent
+  AGENT_CREATE: "agent:create" as Permission,
+  AGENT_READ: "agent:read" as Permission,
+  AGENT_UPDATE: "agent:update" as Permission,
+  AGENT_DELETE: "agent:delete" as Permission,
 };
