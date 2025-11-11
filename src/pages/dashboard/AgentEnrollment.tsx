@@ -35,6 +35,7 @@ import { Action } from "@/lib/permissions";
 export default function AgentEnrollment() {
   const { user } = useAuth();
   const { can } = usePermissions();
+  const { agents, addAgent, loading } = useAgents();
   const [showEnrollDialog, setShowEnrollDialog] = useState(false);
   const [showSMSHistory, setShowSMSHistory] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -50,7 +51,7 @@ export default function AgentEnrollment() {
   };
 
   // Filtrer les agents selon le rôle et la structure/district
-  const filteredAgents = mockHealthAgents.filter((agent) => {
+  const filteredAgents = agents.filter((agent) => {
     if (user?.role === "responsable_structure") {
       return agent.structure === user.structure;
     } else if (user?.role === "responsable_district") {
