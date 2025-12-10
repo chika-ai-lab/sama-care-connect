@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { mockPatients, mockRisquesIA, mockCPNMonthly, mockCouvertureGeo } from "@/data/mockData";
 import { Users, AlertTriangle, TrendingUp, MapPin } from "lucide-react";
+import SenegalMap from "@/components/SenegalMap";
 
 const PartenaireAnalytics = () => {
+  const [structureModalOpen, setStructureModalOpen] = useState(false);
+  const [riskModalOpen, setRiskModalOpen] = useState(false);
+
   // Anonymized statistics
   const stats = {
     totalPatients: mockPatients.length,
@@ -72,14 +78,17 @@ const PartenaireAnalytics = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card 
+          className="cursor-pointer transition-all hover:ring-2 hover:ring-primary/50 hover:shadow-lg"
+          onClick={() => setStructureModalOpen(true)}
+        >
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Structures</CardTitle>
             <MapPin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{mockCouvertureGeo.length}</div>
-            <p className="text-xs text-muted-foreground">Points de service</p>
+            <p className="text-xs text-muted-foreground">Cliquez pour voir la carte</p>
           </CardContent>
         </Card>
       </div>
@@ -108,11 +117,14 @@ const PartenaireAnalytics = () => {
           </CardContent>
         </Card>
 
-        {/* Risk Distribution */}
-        <Card>
+        {/* Risk Distribution - Clickable */}
+        <Card 
+          className="cursor-pointer transition-all hover:ring-2 hover:ring-primary/50 hover:shadow-lg"
+          onClick={() => setRiskModalOpen(true)}
+        >
           <CardHeader>
             <CardTitle>Distribution des Risques</CardTitle>
-            <CardDescription>Répartition par niveau de risque IA</CardDescription>
+            <CardDescription>Cliquez pour voir la cartographie</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -217,6 +229,36 @@ const PartenaireAnalytics = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Structure Map Modal */}
+      <Dialog open={structureModalOpen} onOpenChange={setStructureModalOpen}>
+        <DialogContent className="max-w-4xl h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Cartographie des Structures de Santé</DialogTitle>
+            <DialogDescription>
+              Vue géographique des points de service au Sénégal
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 min-h-0">
+            <SenegalMap mode="structures" />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Risk Distribution Map Modal */}
+      <Dialog open={riskModalOpen} onOpenChange={setRiskModalOpen}>
+        <DialogContent className="max-w-4xl h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Cartographie des Risques</DialogTitle>
+            <DialogDescription>
+              Distribution géographique des niveaux de risque
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 min-h-0">
+            <SenegalMap mode="risks" />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
