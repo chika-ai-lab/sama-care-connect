@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from "react-leaflet";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { mockCouvertureGeo, mockRisquesIA, mockPatients } from "@/data/mockData";
@@ -8,20 +7,8 @@ interface SenegalMapProps {
   mode: 'structures' | 'risks';
 }
 
-// Fix for default marker icons in Leaflet with Vite
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-});
-
 // Senegal center coordinates
 const SENEGAL_CENTER: [number, number] = [14.4974, -14.4524];
-const SENEGAL_BOUNDS: [[number, number], [number, number]] = [
-  [12.3, -17.6], // Southwest
-  [16.7, -11.4]  // Northeast
-];
 
 // Structure coordinates in Senegal
 const STRUCTURE_COORDS: Record<string, { lat: number; lng: number; region: string }> = {
@@ -60,18 +47,11 @@ const REGION_CENTERS: Record<string, { lat: number; lng: number }> = {
   "Louga": { lat: 15.6167, lng: -16.2167 }
 };
 
-// Custom blueprint-style CSS for the map
-const MapStyle = () => {
-  const map = useMap();
-  
-  useEffect(() => {
-    map.fitBounds(SENEGAL_BOUNDS);
-  }, [map]);
-  
-  return null;
-};
-
 const SenegalMap = ({ mode }: SenegalMapProps) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<L.Map | null>(null);
+  const [isMapReady, setIsMapReady] = useState(false);
+
   // Calculate risk data per region
   const getRiskDataByRegion = () => {
     const regionData: Record<string, { rouge: number; orange: number; vert: number }> = {};
@@ -115,139 +95,135 @@ const SenegalMap = ({ mode }: SenegalMapProps) => {
     return Math.max(15, Math.min(40, total * 3));
   };
 
-  // Create custom icon for structures
-  const structureIcon = new L.DivIcon({
-    className: 'custom-marker',
-    html: `<div style="
-      background: linear-gradient(135deg, hsl(221, 83%, 53%), hsl(221, 83%, 40%));
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 3px solid white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      animation: pulse 2s infinite;
-    "></div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -12]
-  });
+  useEffect(() => {
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    // Initialize map
+    const map = L.map(mapRef.current, {
+      center: SENEGAL_CENTER,
+      zoom: 7,
+      scrollWheelZoom: true,
+      minZoom: 6,
+      maxBounds: [
+        [12.3, -17.6],
+        [16.7, -11.4]
+      ]
+    });
+
+    // Add tile layer with blueprint-like style
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+    }).addTo(map);
+
+    mapInstanceRef.current = map;
+    setIsMapReady(true);
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+
+  // Add markers based on mode
+  useEffect(() => {
+    if (!mapInstanceRef.current || !isMapReady) return;
+
+    const map = mapInstanceRef.current;
+
+    // Clear existing layers (except tile layer)
+    map.eachLayer((layer) => {
+      if (!(layer instanceof L.TileLayer)) {
+        map.removeLayer(layer);
+      }
+    });
+
+    if (mode === 'structures') {
+      // Add structure markers
+      mockCouvertureGeo.forEach((geo) => {
+        const coords = STRUCTURE_COORDS[geo.structure];
+        if (!coords) return;
+
+        const marker = L.circleMarker([coords.lat, coords.lng], {
+          radius: 10,
+          fillColor: '#3b82f6',
+          color: '#ffffff',
+          weight: 3,
+          opacity: 1,
+          fillOpacity: 0.8
+        });
+
+        marker.bindPopup(`
+          <div style="padding: 8px; min-width: 150px;">
+            <h3 style="font-weight: bold; font-size: 14px; margin-bottom: 4px;">${geo.structure}</h3>
+            <p style="font-size: 12px; color: #666; margin-bottom: 8px;">${geo.district}</p>
+            <div style="font-size: 12px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Patientes:</span>
+                <strong>${geo.patientes}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>CPN1:</span>
+                <strong>${geo.cpn1}/${geo.cible_cpn1}</strong>
+              </div>
+            </div>
+          </div>
+        `);
+
+        marker.addTo(map);
+      });
+    } else {
+      // Add risk circles by region
+      Object.entries(regionRisks).forEach(([region, data]) => {
+        const center = REGION_CENTERS[region];
+        if (!center || (data.rouge + data.orange + data.vert) === 0) return;
+
+        const circle = L.circleMarker([center.lat, center.lng], {
+          radius: getRiskRadius(data),
+          fillColor: getRiskColor(data),
+          color: getRiskColor(data),
+          weight: 2,
+          opacity: 1,
+          fillOpacity: 0.6
+        });
+
+        circle.bindPopup(`
+          <div style="padding: 8px; min-width: 150px;">
+            <h3 style="font-weight: bold; font-size: 14px; margin-bottom: 8px;">${region}</h3>
+            <div style="font-size: 12px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="color: #ef4444;">Risque élevé:</span>
+                <strong>${data.rouge}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="color: #f97316;">Risque moyen:</span>
+                <strong>${data.orange}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #22c55e;">Risque faible:</span>
+                <strong>${data.vert}</strong>
+              </div>
+            </div>
+          </div>
+        `);
+
+        circle.addTo(map);
+      });
+    }
+  }, [mode, isMapReady, regionRisks]);
 
   return (
     <div className="relative w-full h-full min-h-[400px] rounded-lg overflow-hidden">
-      {/* Blueprint overlay effect */}
-      <style>{`
-        .leaflet-container {
-          background: hsl(var(--card));
-          font-family: inherit;
-        }
-        .leaflet-tile {
-          filter: saturate(0.3) brightness(0.9) hue-rotate(200deg);
-        }
-        .custom-marker div {
-          animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.1); opacity: 0.8; }
-        }
-        .leaflet-popup-content-wrapper {
-          background: hsl(var(--popover));
-          color: hsl(var(--popover-foreground));
-          border-radius: 8px;
-        }
-        .leaflet-popup-tip {
-          background: hsl(var(--popover));
-        }
-      `}</style>
-      
-      <MapContainer
-        center={SENEGAL_CENTER}
-        zoom={7}
+      {/* Map container */}
+      <div 
+        ref={mapRef} 
         className="w-full h-full"
-        style={{ minHeight: '400px' }}
-        scrollWheelZoom={true}
-        maxBounds={SENEGAL_BOUNDS}
-        minZoom={6}
-      >
-        <MapStyle />
-        
-        {/* CartoDB Positron for blueprint-like appearance */}
-        <TileLayer
-          attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-        />
-
-        {/* Structure markers */}
-        {mode === 'structures' && mockCouvertureGeo.map((geo) => {
-          const coords = STRUCTURE_COORDS[geo.structure];
-          if (!coords) return null;
-          
-          return (
-            <Marker 
-              key={geo.structure} 
-              position={[coords.lat, coords.lng]}
-              icon={structureIcon}
-            >
-              <Popup>
-                <div className="p-2">
-                  <h3 className="font-bold text-sm">{geo.structure}</h3>
-                  <p className="text-xs text-muted-foreground">{geo.district}</p>
-                  <div className="mt-2 space-y-1 text-xs">
-                    <div className="flex justify-between">
-                      <span>Patientes:</span>
-                      <span className="font-bold">{geo.patientes}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>CPN1:</span>
-                      <span className="font-bold">{geo.cpn1}/{geo.cible_cpn1}</span>
-                    </div>
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
-          );
-        })}
-
-        {/* Risk circles by region */}
-        {mode === 'risks' && Object.entries(regionRisks).map(([region, data]) => {
-          const center = REGION_CENTERS[region];
-          if (!center || (data.rouge + data.orange + data.vert) === 0) return null;
-          
-          return (
-            <CircleMarker
-              key={region}
-              center={[center.lat, center.lng]}
-              radius={getRiskRadius(data)}
-              pathOptions={{
-                fillColor: getRiskColor(data),
-                fillOpacity: 0.6,
-                color: getRiskColor(data),
-                weight: 2
-              }}
-            >
-              <Popup>
-                <div className="p-2">
-                  <h3 className="font-bold text-sm">{region}</h3>
-                  <div className="mt-2 space-y-1 text-xs">
-                    <div className="flex justify-between gap-4">
-                      <span className="text-red-500">Risque élevé:</span>
-                      <span className="font-bold">{data.rouge}</span>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <span className="text-orange-500">Risque moyen:</span>
-                      <span className="font-bold">{data.orange}</span>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <span className="text-green-500">Risque faible:</span>
-                      <span className="font-bold">{data.vert}</span>
-                    </div>
-                  </div>
-                </div>
-              </Popup>
-            </CircleMarker>
-          );
-        })}
-      </MapContainer>
+        style={{ 
+          minHeight: '400px',
+          filter: 'saturate(0.4) brightness(0.95) hue-rotate(200deg)'
+        }} 
+      />
 
       {/* Legend */}
       <div className="absolute bottom-4 left-4 z-[1000] bg-background/90 backdrop-blur-sm rounded-lg p-3 border border-border shadow-lg">
