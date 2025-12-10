@@ -110,9 +110,9 @@ const SenegalMap = ({ mode }: SenegalMapProps) => {
       ]
     });
 
-    // Add tile layer with blueprint-like style
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+    // Add colorful tile layer (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
     mapInstanceRef.current = map;
@@ -219,10 +219,7 @@ const SenegalMap = ({ mode }: SenegalMapProps) => {
       <div 
         ref={mapRef} 
         className="w-full h-full"
-        style={{ 
-          minHeight: '400px',
-          filter: 'saturate(0.4) brightness(0.95) hue-rotate(200deg)'
-        }} 
+        style={{ minHeight: '400px' }} 
       />
 
       {/* Legend */}
