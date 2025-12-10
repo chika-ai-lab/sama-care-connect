@@ -1,86 +1,74 @@
+import { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, CircleMarker, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { mockCouvertureGeo, mockRisquesIA, mockPatients } from "@/data/mockData";
 
 interface SenegalMapProps {
   mode: 'structures' | 'risks';
 }
 
-// Coordinates for Senegal regions (simplified)
-const REGION_PATHS: Record<string, { path: string; center: { x: number; y: number } }> = {
-  "Dakar": {
-    path: "M80,180 L95,175 L100,185 L90,195 L75,190 Z",
-    center: { x: 87, y: 185 }
-  },
-  "Thiès": {
-    path: "M100,165 L130,155 L145,175 L135,195 L100,190 L95,175 Z",
-    center: { x: 118, y: 175 }
-  },
-  "Diourbel": {
-    path: "M130,155 L160,145 L175,165 L165,185 L145,175 Z",
-    center: { x: 155, y: 165 }
-  },
-  "Fatick": {
-    path: "M135,195 L165,185 L180,210 L150,230 L120,215 Z",
-    center: { x: 150, y: 207 }
-  },
-  "Kaolack": {
-    path: "M165,185 L200,175 L220,200 L200,225 L180,210 Z",
-    center: { x: 193, y: 200 }
-  },
-  "Kaffrine": {
-    path: "M200,175 L250,165 L270,190 L250,215 L220,200 Z",
-    center: { x: 238, y: 190 }
-  },
-  "Tambacounda": {
-    path: "M270,190 L350,180 L380,220 L340,260 L280,240 L250,215 Z",
-    center: { x: 315, y: 220 }
-  },
-  "Kédougou": {
-    path: "M340,260 L380,250 L400,290 L370,310 L340,290 Z",
-    center: { x: 365, y: 280 }
-  },
-  "Kolda": {
-    path: "M220,260 L280,240 L310,270 L280,300 L230,290 Z",
-    center: { x: 265, y: 270 }
-  },
-  "Sédhiou": {
-    path: "M170,270 L220,260 L230,290 L200,310 L165,295 Z",
-    center: { x: 197, y: 285 }
-  },
-  "Ziguinchor": {
-    path: "M120,280 L170,270 L165,295 L140,310 L110,295 Z",
-    center: { x: 140, y: 290 }
-  },
-  "Saint-Louis": {
-    path: "M100,80 L180,60 L200,100 L175,140 L130,155 L100,130 Z",
-    center: { x: 150, y: 105 }
-  },
-  "Matam": {
-    path: "M200,100 L300,80 L330,130 L280,160 L200,175 L175,140 Z",
-    center: { x: 250, y: 125 }
-  },
-  "Louga": {
-    path: "M100,130 L130,155 L160,145 L175,140 L200,175 L200,130 L175,140 Z",
-    center: { x: 155, y: 145 }
-  }
+// Fix for default marker icons in Leaflet with Vite
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
+
+// Senegal center coordinates
+const SENEGAL_CENTER: [number, number] = [14.4974, -14.4524];
+const SENEGAL_BOUNDS: [[number, number], [number, number]] = [
+  [12.3, -17.6], // Southwest
+  [16.7, -11.4]  // Northeast
+];
+
+// Structure coordinates in Senegal
+const STRUCTURE_COORDS: Record<string, { lat: number; lng: number; region: string }> = {
+  "Poste de Santé Dakar Nord": { lat: 14.7167, lng: -17.4677, region: "Dakar" },
+  "Poste de Santé Dakar Sud": { lat: 14.6937, lng: -17.4441, region: "Dakar" },
+  "Centre de Santé Pikine": { lat: 14.7645, lng: -17.3907, region: "Dakar" },
+  "Poste de Santé Guédiawaye": { lat: 14.7772, lng: -17.3939, region: "Dakar" },
+  "Poste de Santé Rufisque": { lat: 14.7167, lng: -17.2667, region: "Dakar" },
+  "Centre de Santé Thiès": { lat: 14.7886, lng: -16.9260, region: "Thiès" },
+  "Poste de Santé Mbour": { lat: 14.4167, lng: -16.9667, region: "Thiès" },
+  "Centre de Santé Tivaouane": { lat: 14.9500, lng: -16.8167, region: "Thiès" },
+  "Poste de Santé Diourbel": { lat: 14.6500, lng: -16.2333, region: "Diourbel" },
+  "Centre de Santé Bambey": { lat: 14.7000, lng: -16.4500, region: "Diourbel" },
+  "Poste de Santé Fatick": { lat: 14.3333, lng: -16.4000, region: "Fatick" },
+  "Centre de Santé Kaolack": { lat: 14.1500, lng: -16.0667, region: "Kaolack" },
+  "Poste de Santé Tambacounda": { lat: 13.7667, lng: -13.6667, region: "Tambacounda" },
+  "Centre de Santé Saint-Louis": { lat: 16.0333, lng: -16.5000, region: "Saint-Louis" },
+  "Poste de Santé Ziguinchor": { lat: 12.5667, lng: -16.2667, region: "Ziguinchor" }
 };
 
-// Structure positions on map
-const STRUCTURE_POSITIONS: Record<string, { x: number; y: number }> = {
-  "Poste de Santé Dakar Nord": { x: 82, y: 180 },
-  "Poste de Santé Dakar Sud": { x: 90, y: 190 },
-  "Centre de Santé Pikine": { x: 95, y: 183 },
-  "Poste de Santé Guédiawaye": { x: 88, y: 177 },
-  "Poste de Santé Rufisque": { x: 98, y: 188 },
-  "Centre de Santé Thiès": { x: 115, y: 170 },
-  "Poste de Santé Mbour": { x: 125, y: 185 },
-  "Centre de Santé Tivaouane": { x: 110, y: 165 },
-  "Poste de Santé Diourbel": { x: 155, y: 160 },
-  "Centre de Santé Bambey": { x: 150, y: 168 },
-  "Poste de Santé Fatick": { x: 145, y: 205 },
-  "Centre de Santé Kaolack": { x: 190, y: 198 },
-  "Poste de Santé Tambacounda": { x: 310, y: 215 },
-  "Centre de Santé Saint-Louis": { x: 145, y: 100 },
-  "Poste de Santé Ziguinchor": { x: 135, y: 288 }
+// Region centers for risk display
+const REGION_CENTERS: Record<string, { lat: number; lng: number }> = {
+  "Dakar": { lat: 14.7167, lng: -17.4677 },
+  "Thiès": { lat: 14.7886, lng: -16.9260 },
+  "Diourbel": { lat: 14.6500, lng: -16.2333 },
+  "Fatick": { lat: 14.3333, lng: -16.4000 },
+  "Kaolack": { lat: 14.1500, lng: -16.0667 },
+  "Kaffrine": { lat: 14.1000, lng: -15.5500 },
+  "Tambacounda": { lat: 13.7667, lng: -13.6667 },
+  "Kédougou": { lat: 12.5500, lng: -12.1833 },
+  "Kolda": { lat: 12.8833, lng: -14.9500 },
+  "Sédhiou": { lat: 12.7000, lng: -15.5500 },
+  "Ziguinchor": { lat: 12.5667, lng: -16.2667 },
+  "Saint-Louis": { lat: 16.0333, lng: -16.5000 },
+  "Matam": { lat: 15.6500, lng: -13.2500 },
+  "Louga": { lat: 15.6167, lng: -16.2167 }
+};
+
+// Custom blueprint-style CSS for the map
+const MapStyle = () => {
+  const map = useMap();
+  
+  useEffect(() => {
+    map.fitBounds(SENEGAL_BOUNDS);
+  }, [map]);
+  
+  return null;
 };
 
 const SenegalMap = ({ mode }: SenegalMapProps) => {
@@ -88,25 +76,14 @@ const SenegalMap = ({ mode }: SenegalMapProps) => {
   const getRiskDataByRegion = () => {
     const regionData: Record<string, { rouge: number; orange: number; vert: number }> = {};
     
+    Object.keys(REGION_CENTERS).forEach(region => {
+      regionData[region] = { rouge: 0, orange: 0, vert: 0 };
+    });
+    
     mockPatients.forEach(patient => {
       const risk = mockRisquesIA.find(r => r.patient_id === patient.id);
-      const region = patient.structure?.includes("Dakar") || patient.structure?.includes("Pikine") || patient.structure?.includes("Guédiawaye") || patient.structure?.includes("Rufisque")
-        ? "Dakar" 
-        : patient.structure?.includes("Thiès") || patient.structure?.includes("Mbour") || patient.structure?.includes("Tivaouane")
-        ? "Thiès"
-        : patient.structure?.includes("Diourbel") || patient.structure?.includes("Bambey")
-        ? "Diourbel"
-        : patient.structure?.includes("Saint-Louis")
-        ? "Saint-Louis"
-        : patient.structure?.includes("Tambacounda")
-        ? "Tambacounda"
-        : patient.structure?.includes("Ziguinchor")
-        ? "Ziguinchor"
-        : patient.structure?.includes("Kaolack")
-        ? "Kaolack"
-        : patient.structure?.includes("Fatick")
-        ? "Fatick"
-        : "Dakar";
+      const structureCoords = STRUCTURE_COORDS[patient.structure || ""];
+      const region = structureCoords?.region || "Dakar";
       
       if (!regionData[region]) {
         regionData[region] = { rouge: 0, orange: 0, vert: 0 };
@@ -122,159 +99,181 @@ const SenegalMap = ({ mode }: SenegalMapProps) => {
 
   const regionRisks = getRiskDataByRegion();
 
-  const getRegionColor = (region: string) => {
-    if (mode === 'structures') {
-      return 'hsl(var(--primary) / 0.3)';
-    }
-    
-    const data = regionRisks[region];
-    if (!data) return 'hsl(var(--muted) / 0.3)';
-    
+  const getRiskColor = (data: { rouge: number; orange: number; vert: number }) => {
     const total = data.rouge + data.orange + data.vert;
-    if (total === 0) return 'hsl(var(--muted) / 0.3)';
+    if (total === 0) return '#6b7280';
     
     const riskScore = (data.rouge * 3 + data.orange * 2 + data.vert) / total;
     
-    if (riskScore > 2) return 'hsl(0 84% 60% / 0.6)'; // Rouge
-    if (riskScore > 1.5) return 'hsl(25 95% 53% / 0.6)'; // Orange
-    return 'hsl(142 71% 45% / 0.5)'; // Vert
+    if (riskScore > 2) return '#ef4444';
+    if (riskScore > 1.5) return '#f97316';
+    return '#22c55e';
   };
 
+  const getRiskRadius = (data: { rouge: number; orange: number; vert: number }) => {
+    const total = data.rouge + data.orange + data.vert;
+    return Math.max(15, Math.min(40, total * 3));
+  };
+
+  // Create custom icon for structures
+  const structureIcon = new L.DivIcon({
+    className: 'custom-marker',
+    html: `<div style="
+      background: linear-gradient(135deg, hsl(221, 83%, 53%), hsl(221, 83%, 40%));
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      animation: pulse 2s infinite;
+    "></div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -12]
+  });
+
   return (
-    <div className="relative w-full h-full min-h-[400px] bg-[hsl(var(--card))] rounded-lg p-4">
-      {/* Blueprint grid background */}
-      <div 
-        className="absolute inset-0 opacity-20"
-        style={{
-          backgroundImage: `
-            linear-gradient(hsl(var(--primary) / 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, hsl(var(--primary) / 0.3) 1px, transparent 1px)
-          `,
-          backgroundSize: '20px 20px'
-        }}
-      />
+    <div className="relative w-full h-full min-h-[400px] rounded-lg overflow-hidden">
+      {/* Blueprint overlay effect */}
+      <style>{`
+        .leaflet-container {
+          background: hsl(var(--card));
+          font-family: inherit;
+        }
+        .leaflet-tile {
+          filter: saturate(0.3) brightness(0.9) hue-rotate(200deg);
+        }
+        .custom-marker div {
+          animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .leaflet-popup-content-wrapper {
+          background: hsl(var(--popover));
+          color: hsl(var(--popover-foreground));
+          border-radius: 8px;
+        }
+        .leaflet-popup-tip {
+          background: hsl(var(--popover));
+        }
+      `}</style>
       
-      <svg 
-        viewBox="0 0 450 350" 
+      <MapContainer
+        center={SENEGAL_CENTER}
+        zoom={7}
         className="w-full h-full"
-        style={{ filter: 'drop-shadow(0 0 10px hsl(var(--primary) / 0.3))' }}
+        style={{ minHeight: '400px' }}
+        scrollWheelZoom={true}
+        maxBounds={SENEGAL_BOUNDS}
+        minZoom={6}
       >
-        {/* Senegal outline */}
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
+        <MapStyle />
+        
+        {/* CartoDB Positron for blueprint-like appearance */}
+        <TileLayer
+          attribution='&copy; <a href="https://carto.com/">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        />
 
-        {/* Regions */}
-        {Object.entries(REGION_PATHS).map(([region, data]) => (
-          <g key={region}>
-            <path
-              d={data.path}
-              fill={getRegionColor(region)}
-              stroke="hsl(var(--primary))"
-              strokeWidth="1.5"
-              className="transition-all duration-300 hover:opacity-80"
-              filter="url(#glow)"
-            />
-            <text
-              x={data.center.x}
-              y={data.center.y}
-              className="fill-foreground text-[8px] font-medium pointer-events-none"
-              textAnchor="middle"
-              dominantBaseline="middle"
-            >
-              {region}
-            </text>
-          </g>
-        ))}
-
-        {/* Structure markers (only in structure mode) */}
+        {/* Structure markers */}
         {mode === 'structures' && mockCouvertureGeo.map((geo) => {
-          const pos = STRUCTURE_POSITIONS[geo.structure];
-          if (!pos) return null;
+          const coords = STRUCTURE_COORDS[geo.structure];
+          if (!coords) return null;
           
           return (
-            <g key={geo.structure}>
-              <circle
-                cx={pos.x}
-                cy={pos.y}
-                r="6"
-                fill="hsl(var(--primary))"
-                stroke="hsl(var(--background))"
-                strokeWidth="2"
-                className="animate-pulse"
-              />
-              <circle
-                cx={pos.x}
-                cy={pos.y}
-                r="10"
-                fill="none"
-                stroke="hsl(var(--primary))"
-                strokeWidth="1"
-                opacity="0.5"
-              />
-            </g>
+            <Marker 
+              key={geo.structure} 
+              position={[coords.lat, coords.lng]}
+              icon={structureIcon}
+            >
+              <Popup>
+                <div className="p-2">
+                  <h3 className="font-bold text-sm">{geo.structure}</h3>
+                  <p className="text-xs text-muted-foreground">{geo.district}</p>
+                  <div className="mt-2 space-y-1 text-xs">
+                    <div className="flex justify-between">
+                      <span>Patientes:</span>
+                      <span className="font-bold">{geo.patientes}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>CPN1:</span>
+                      <span className="font-bold">{geo.cpn1}/{geo.cible_cpn1}</span>
+                    </div>
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
           );
         })}
 
-        {/* Risk markers (only in risk mode) */}
+        {/* Risk circles by region */}
         {mode === 'risks' && Object.entries(regionRisks).map(([region, data]) => {
-          const regionPath = REGION_PATHS[region];
-          if (!regionPath || (data.rouge + data.orange + data.vert) === 0) return null;
+          const center = REGION_CENTERS[region];
+          if (!center || (data.rouge + data.orange + data.vert) === 0) return null;
           
           return (
-            <g key={`risk-${region}`}>
-              {data.rouge > 0 && (
-                <text
-                  x={regionPath.center.x}
-                  y={regionPath.center.y + 12}
-                  className="fill-destructive text-[7px] font-bold"
-                  textAnchor="middle"
-                >
-                  ⚠ {data.rouge}
-                </text>
-              )}
-            </g>
+            <CircleMarker
+              key={region}
+              center={[center.lat, center.lng]}
+              radius={getRiskRadius(data)}
+              pathOptions={{
+                fillColor: getRiskColor(data),
+                fillOpacity: 0.6,
+                color: getRiskColor(data),
+                weight: 2
+              }}
+            >
+              <Popup>
+                <div className="p-2">
+                  <h3 className="font-bold text-sm">{region}</h3>
+                  <div className="mt-2 space-y-1 text-xs">
+                    <div className="flex justify-between gap-4">
+                      <span className="text-red-500">Risque élevé:</span>
+                      <span className="font-bold">{data.rouge}</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span className="text-orange-500">Risque moyen:</span>
+                      <span className="font-bold">{data.orange}</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span className="text-green-500">Risque faible:</span>
+                      <span className="font-bold">{data.vert}</span>
+                    </div>
+                  </div>
+                </div>
+              </Popup>
+            </CircleMarker>
           );
         })}
-
-        {/* Ocean label */}
-        <text x="50" y="250" className="fill-muted-foreground text-[10px] italic">
-          Océan Atlantique
-        </text>
-      </svg>
+      </MapContainer>
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-background/80 backdrop-blur-sm rounded-lg p-3 border border-border">
+      <div className="absolute bottom-4 left-4 z-[1000] bg-background/90 backdrop-blur-sm rounded-lg p-3 border border-border shadow-lg">
         <h4 className="text-xs font-semibold mb-2 text-foreground">Légende</h4>
         {mode === 'structures' ? (
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
+              <div className="w-3 h-3 rounded-full bg-primary" />
               <span className="text-xs text-muted-foreground">Structure de santé</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded bg-primary/30 border border-primary" />
-              <span className="text-xs text-muted-foreground">Région couverte</span>
+            <div className="text-xs text-muted-foreground mt-2">
+              Cliquez sur un marqueur pour les détails
             </div>
           </div>
         ) : (
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: 'hsl(0 84% 60% / 0.6)' }} />
+              <div className="w-3 h-3 rounded-full bg-red-500" />
               <span className="text-xs text-muted-foreground">Risque élevé</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: 'hsl(25 95% 53% / 0.6)' }} />
+              <div className="w-3 h-3 rounded-full bg-orange-500" />
               <span className="text-xs text-muted-foreground">Risque moyen</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: 'hsl(142 71% 45% / 0.5)' }} />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
               <span className="text-xs text-muted-foreground">Risque faible</span>
             </div>
           </div>
@@ -282,7 +281,7 @@ const SenegalMap = ({ mode }: SenegalMapProps) => {
       </div>
 
       {/* Stats overlay */}
-      <div className="absolute top-4 right-4 bg-background/80 backdrop-blur-sm rounded-lg p-3 border border-border">
+      <div className="absolute top-4 right-4 z-[1000] bg-background/90 backdrop-blur-sm rounded-lg p-3 border border-border shadow-lg">
         <h4 className="text-xs font-semibold mb-2 text-foreground">
           {mode === 'structures' ? 'Structures' : 'Distribution'}
         </h4>
