@@ -171,7 +171,7 @@ export function AppSidebar() {
           </div>
           {open && (
             <div className="flex flex-col">
-              <span className="font-semibold text-sm">TEKHE</span>
+              <span className="font-semibold text-sm">Yaay</span>
               <span className="text-xs text-muted-foreground">
                 Santé Maternelle
               </span>

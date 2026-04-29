@@ -89,11 +89,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center gradient-tekhe p-4">
+    <div className="min-h-screen flex items-center justify-center gradient-yaay p-4">
       <Card className="w-full max-w-md shadow-elegant">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[hsl(var(--tekhe-red))] via-[hsl(var(--tekhe-orange))] to-[hsl(var(--tekhe-green))] bg-clip-text text-transparent">
-            TEKHE
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[hsl(var(--yaay-red))] via-[hsl(var(--yaay-orange))] to-[hsl(var(--yaay-green))] bg-clip-text text-transparent">
+            Yaay
           </CardTitle>
           <CardDescription>
             Plateforme de suivi district/région

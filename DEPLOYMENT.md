@@ -1,6 +1,6 @@
-# Guide de Déploiement TEKHE sur Netlify
+# Guide de Déploiement Yaay sur Netlify
 
-Ce guide explique comment déployer l'application TEKHE sur Netlify en évitant les erreurs 404 lors du rafraîchissement.
+Ce guide explique comment déployer l'application Yaay sur Netlify en évitant les erreurs 404 lors du rafraîchissement.
 
 ## Configuration Netlify incluse ✅
 

@@ -14,10 +14,10 @@ export interface SMSRecord {
 }
 
 // Simulation d'une base de données d'SMS envoyés (localStorage)
-const SMS_STORAGE_KEY = "tekhe_sms_history";
+const SMS_STORAGE_KEY = "yaay_sms_history";
 
 export function generateEnrollmentSMS(agent: HealthAgent): string {
-  return `Bienvenue sur TEKHE Care! 
+  return `Bienvenue sur Yaay Care!
 Lien app: ${agent.lien_telecharger}
 Code: ${agent.code_enrolement}
 Créez votre compte avec votre téléphone.`;

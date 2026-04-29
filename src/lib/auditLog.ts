@@ -22,7 +22,7 @@ export interface AuditLogEntry {
   userAgent?: string;
 }
 
-const AUDIT_LOG_KEY = "tekhe_audit_log";
+const AUDIT_LOG_KEY = "yaay_audit_log";
 const MAX_LOG_ENTRIES = 1000; // Limite pour éviter de surcharger localStorage
 
 /**

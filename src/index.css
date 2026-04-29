@@ -15,13 +15,13 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
     
-    /* TEKHE Brand Colors - Palette personnalisée */
+    /* Yaay Brand Colors - Palette personnalisée */
     --primary: 10 74% 61%;
     --primary-foreground: 0 0% 100%;
-    --tekhe-orange: 27 87% 67%;
-    --tekhe-green: 138 29% 43%;
-    --tekhe-red: 10 74% 61%;
-    --tekhe-peach: 26 97% 85%;
+    --yaay-orange: 27 87% 67%;
+    --yaay-green: 138 29% 43%;
+    --yaay-red: 10 74% 61%;
+    --yaay-peach: 26 97% 85%;
     
     --secondary: 26 97% 85%;
     --secondary-foreground: 0 0% 9%;
@@ -35,7 +35,7 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 10 74% 61%;
     
-    /* TEKHE Status Colors */
+    /* Yaay Status Colors */
     --status-rouge: 10 74% 61%;
     --status-orange: 27 87% 67%;
     --status-vert: 138 29% 43%;
@@ -60,13 +60,13 @@ All colors MUST be HSL.
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
     
-    /* TEKHE Brand Colors - Dark Mode */
+    /* Yaay Brand Colors - Dark Mode */
     --primary: 10 74% 61%;
     --primary-foreground: 0 0% 100%;
-    --tekhe-orange: 27 87% 67%;
-    --tekhe-green: 138 29% 43%;
-    --tekhe-red: 10 74% 61%;
-    --tekhe-peach: 26 97% 85%;
+    --yaay-orange: 27 87% 67%;
+    --yaay-green: 138 29% 43%;
+    --yaay-red: 10 74% 61%;
+    --yaay-peach: 26 97% 85%;
     
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
@@ -106,7 +106,7 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .gradient-tekhe {
+  .gradient-yaay {
     background: linear-gradient(135deg, hsl(138 29% 43%), hsl(27 87% 67%), hsl(10 74% 61%));
   }
   

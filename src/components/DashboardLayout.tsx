@@ -43,7 +43,7 @@ export default function DashboardLayout() {
             {!isPartenaire && <SidebarTrigger />}
             <div className="ml-4 flex-1">
               <h1 className="text-lg font-semibold">
-                Système de Santé Maternelle - TEKHE
+                Système de Santé Maternelle - Yaay
               </h1>
             </div>
             <div className="flex items-center gap-4">

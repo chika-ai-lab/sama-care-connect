@@ -30,10 +30,10 @@ interface OnboardingStep {
 const getStepsByRole = (role: string): OnboardingStep[] => {
   const commonSteps: OnboardingStep[] = [
     {
-      title: "Bienvenue sur TEKHE",
+      title: "Bienvenue sur Yaay",
       description: "Plateforme de gestion de santé maternelle et infantile",
       icon: Users,
-      content: "TEKHE vous permet de suivre et gérer les données de santé maternelle et infantile de manière efficace et sécurisée.",
+      content: "Yaay vous permet de suivre et gérer les données de santé maternelle et infantile de manière efficace et sécurisée.",
     },
   ];
 

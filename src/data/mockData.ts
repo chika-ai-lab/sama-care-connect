@@ -1,4 +1,4 @@
-// Mock data for TEKHE Dashboard
+// Mock data for Yaay Dashboard
 
 export interface Patient {
   id: string;
@@ -1008,7 +1008,7 @@ export const mockHealthAgents: HealthAgent[] = [
     statut: "actif",
     date_enrolement: generateDate(30),
     code_enrolement: "SF2025001",
-    lien_telecharger: "https://app.tekhe.sn/download/HA001",
+    lien_telecharger: "https://app.yaay.sn/download/HA001",
     sms_envoye: true,
     date_sms_envoye: generateDate(30),
     compte_cree: true,
@@ -1026,7 +1026,7 @@ export const mockHealthAgents: HealthAgent[] = [
     statut: "actif",
     date_enrolement: generateDate(25),
     code_enrolement: "SF2025002",
-    lien_telecharger: "https://app.tekhe.sn/download/HA002",
+    lien_telecharger: "https://app.yaay.sn/download/HA002",
     sms_envoye: true,
     date_sms_envoye: generateDate(25),
     compte_cree: true,
@@ -1044,7 +1044,7 @@ export const mockHealthAgents: HealthAgent[] = [
     statut: "enroule",
     date_enrolement: generateDate(5),
     code_enrolement: "SF2025003",
-    lien_telecharger: "https://app.tekhe.sn/download/HA003",
+    lien_telecharger: "https://app.yaay.sn/download/HA003",
     sms_envoye: true,
     date_sms_envoye: generateDate(5),
     compte_cree: false,
@@ -1061,7 +1061,7 @@ export const mockHealthAgents: HealthAgent[] = [
     statut: "enroule",
     date_enrolement: generateDate(2),
     code_enrolement: "AS2025001",
-    lien_telecharger: "https://app.tekhe.sn/download/HA004",
+    lien_telecharger: "https://app.yaay.sn/download/HA004",
     sms_envoye: true,
     date_sms_envoye: generateDate(2),
     compte_cree: false,
@@ -1078,7 +1078,7 @@ export const mockHealthAgents: HealthAgent[] = [
     statut: "en_attente",
     date_enrolement: generateDate(0),
     code_enrolement: "AS2025002",
-    lien_telecharger: "https://app.tekhe.sn/download/HA005",
+    lien_telecharger: "https://app.yaay.sn/download/HA005",
     sms_envoye: false,
     compte_cree: false,
   },

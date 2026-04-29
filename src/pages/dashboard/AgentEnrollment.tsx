@@ -157,7 +157,7 @@ export default function AgentEnrollment() {
       statut: "enroule",
       date_enrolement: new Date().toISOString().split("T")[0],
       code_enrolement: code,
-      lien_telecharger: `https://app.tekhe.sn/download/${code}`,
+      lien_telecharger: `https://app.yaay.sn/download/${code}`,
       sms_envoye: false,
       compte_cree: false,
     };

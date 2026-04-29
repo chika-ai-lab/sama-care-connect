@@ -158,7 +158,7 @@ export default function Dashboard() {
     <div className="p-6 space-y-6">
       {/* Filters Bar */}
       <div className="flex flex-wrap gap-4 items-center justify-between">
-        <h1 className="text-3xl font-bold">Tableau de bord TEKHE</h1>
+        <h1 className="text-3xl font-bold">Tableau de bord Yaay</h1>
         <div className="flex gap-2">
           {/* Date Range Picker */}
           <Popover>

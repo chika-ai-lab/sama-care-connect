@@ -1,4 +1,4 @@
-# TEKHE Care Dashboard
+# Yaay Care Dashboard
 
 Tableau de bord web pour la gestion de la santé maternelle au Sénégal. Suivi des consultations prénatales (CPN), détection des risques via IA, enrôlement CSU, références SONU, PEV et nutrition, avec export DHIS2.
 
@@ -9,7 +9,7 @@ Tableau de bord web pour la gestion de la santé maternelle au Sénégal. Suivi 
 ```bash
 # Cloner le projet
 git clone <url-du-depot>
-cd tekhe-care-dash
+cd yaay-care-connect
 
 # Installer les dépendances
 pnpm install
@@ -44,7 +44,7 @@ pnpm run dev
 ## Architecture & Structure
 
 ```
-tekhe-care-dash/
+yaay-care-connect/
 ├── src/
 │   ├── components/
 │   │   ├── ui/              # Shadcn UI components
@@ -363,8 +363,8 @@ MIT - Voir [LICENSE](LICENSE)
 
 ## Contact
 
-📧 Email: contact@tekhe.sn
-🌐 Web: https://tekhe.sn
+📧 Email: contact@yaay.sn
+🌐 Web: https://yaay.sn
 
 ---
 
